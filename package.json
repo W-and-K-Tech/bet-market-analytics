@@ -1,0 +1,15 @@
+{
+  "name": "bet-market-analytics",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "preview:frontend": "cd packages/frontend && yarn preview",
+    "dev:frontend": "cd packages/frontend && yarn dev",
+    "start:backend": "cd packages/backend && node index.js"
+  }
+}
