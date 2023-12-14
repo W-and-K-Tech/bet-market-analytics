@@ -26,25 +26,14 @@ ChartJS.register(
   Legend
 )
 
-const loadData = async (groupBy = 'hour') => {
+const loadData = async (groupBy = 'hour', betType?: 'single' | 'multi') => {
   try {
-    const response = await fetch(`http://localhost:3000/api/analytics/total-handle?groupBy=${groupBy}`);
+    const response = await fetch(`http://localhost:3000/api/analytics/total-handle?groupBy=${groupBy}${betType ? `&betType=${betType}` : ''}`);
     const data = await response.json();
-    chartData.value = {
-      labels: data.map(item => groupBy === 'hour' ? item.bet_time : item.bet_date),
-      datasets: [
-        {
-          label: `Total Handle (${groupBy})`,
-          data: data.map(item => item.total_handle),
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 1
-        }
-      ]
-    };
+    return data;
   } catch (error) {
     console.error('Error fetching data:', error);
-    return {};
+    return null;
   }
 }
 
@@ -55,5 +44,58 @@ const options = {
 
 const chartData = ref(null);
 
-onMounted(() => loadData());
+onMounted(async () => {
+  const totalHandleByHour = await loadData('hour');
+  const totalSingleBetByHour = await loadData('hour', 'single');
+  const totalMultiBetByHour = await loadData('hour', 'multi');
+  const totalTimeDividends = totalHandleByHour.map(item => item.bet_time);
+
+  chartData.value = {
+    labels: totalTimeDividends,
+    datasets: [
+      {
+        label: `Total Handle`,
+        data: totalTimeDividends.map(time => {
+          const matchingTimeDividend = totalHandleByHour.find((item) => item.bet_time === time);
+          if (matchingTimeDividend) {
+            return matchingTimeDividend.total_handle;
+          } else {
+            return 0;
+          }
+        }),
+        backgroundColor: 'rgba(139, 92, 246)',
+        borderColor: 'rgba(196, 181, 253)',
+        borderWidth: 1
+      },
+      {
+        label: `Total Single Bet`,
+        data: totalTimeDividends.map(time => {
+          const matchingTimeDividend = totalSingleBetByHour.find((item) => item.bet_time === time);
+          if (matchingTimeDividend) {
+            return matchingTimeDividend.total_handle;
+          } else {
+            return 0;
+          }
+        }),
+        backgroundColor: 'rgba(16, 185, 129)',
+        borderColor: 'rgba(167, 243, 208)',
+        borderWidth: 1
+      },
+      {
+        label: `Total Multi-Bet`,
+        data: totalTimeDividends.map(time => {
+          const matchingTimeDividend = totalMultiBetByHour.find((item) => item.bet_time === time);
+          if (matchingTimeDividend) {
+            return matchingTimeDividend.total_handle;
+          } else {
+            return 0;
+          }
+        }),
+        backgroundColor: 'rgba(245, 158, 11)',
+        borderColor: 'rgba(253, 230, 138)',
+        borderWidth: 1
+      },
+    ]
+  };
+});
 </script>

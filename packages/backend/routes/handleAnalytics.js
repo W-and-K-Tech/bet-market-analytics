@@ -18,8 +18,9 @@ const connectionSettings = {
 
 router.get("/total-handle", async (req, res) => {
   const groupBy = req.query.groupBy || "day"; // Default grouping by day
+  const betType = req.query.betType; // Bet type ('single' or 'multi')
 
-  const key = `total-handle_${groupBy}`;
+  const key = `total-handle_${groupBy}${betType ? `_${betType}` : ""}`;
   const cachedData = analyticsCache.get(key);
 
   if (cachedData) {
@@ -32,16 +33,19 @@ router.get("/total-handle", async (req, res) => {
       if (groupBy === "hour") {
         query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:00:00') as bet_time, SUM(book_risk) as total_handle
                  FROM bet_transactions
+                 ${betType ? `WHERE bet_type = '${betType}'` : ""}
                  GROUP BY bet_time
                  ORDER BY bet_time`;
       } else {
         // Default to group by day
         query = `SELECT DATE(accepted_datetime_utc) as bet_date, SUM(book_risk) as total_handle
                  FROM bet_transactions
+                 ${betType ? `WHERE bet_type = '${betType}'` : ""}
                  GROUP BY bet_date
                  ORDER BY bet_date`;
       }
 
+      console.log("query", query);
       const [rows] = await conn.execute(query);
       await conn.end();
 
