@@ -10,7 +10,8 @@
   "scripts": {
     "preview:frontend": "cd packages/frontend && yarn preview",
     "dev:frontend": "cd packages/frontend && yarn dev",
-    "start:backend": "cd packages/backend && node index.js"
+    "start:backend": "cd packages/backend && node index.js",
+    "dev:backend": "cd packages/backend && nodemon index.js"
   },
   "dependencies": {
     "dotenv": "^16.3.1"

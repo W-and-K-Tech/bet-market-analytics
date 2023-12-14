@@ -7,7 +7,13 @@ const app = express();
 require("dotenv").config();
 
 // Enable CORS for all domains
-router.use(cors());
+app.use(
+  cors({
+    origin: "*", // or '*' to allow all origins
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "*",
+  })
+);
 
 app.use("/api/analytics", analyticsRoutes);
 
