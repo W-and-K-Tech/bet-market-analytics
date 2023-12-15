@@ -14,6 +14,7 @@ import {
   Legend,
   TimeScale,
   type ChartOptions,
+  type ChartData,
 } from 'chart.js';
 import { onMounted, ref } from 'vue';
 import { Line } from 'vue-chartjs'
@@ -84,7 +85,7 @@ const options: ChartOptions<'line'> = {
   }
 }
 
-const chartData = ref(null);
+const chartData = ref<ChartData | null>(null);
 
 onMounted(async () => {
   const totalHandleByHour = await loadData('hour');
@@ -107,7 +108,7 @@ onMounted(async () => {
         }),
         backgroundColor: 'rgba(139, 92, 246)',
         borderColor: 'rgba(196, 181, 253)',
-        borderWidth: 1
+        borderWidth: 2,
       },
       {
         label: `Total Single Bet`,
@@ -121,7 +122,7 @@ onMounted(async () => {
         }),
         backgroundColor: 'rgba(16, 185, 129)',
         borderColor: 'rgba(167, 243, 208)',
-        borderWidth: 1
+        borderWidth: 2
       },
       {
         label: `Total Multi-Bet`,
@@ -135,7 +136,7 @@ onMounted(async () => {
         }),
         backgroundColor: 'rgba(245, 158, 11)',
         borderColor: 'rgba(253, 230, 138)',
-        borderWidth: 1
+        borderWidth: 2
       },
     ]
   };

@@ -5,12 +5,12 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
-    <div class="wrapper">
+    <div class="flex h-12">
       <!-- <HelloWorld msg="You did it!" /> -->
-
-      <nav>
+      <h1>NBA Game Bet Transaction Analytics Dashboard</h1>
+      <nav class="ml-12 flex gap-4">
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
