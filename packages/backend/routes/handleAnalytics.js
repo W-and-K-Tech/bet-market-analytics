@@ -90,27 +90,35 @@ router.get("/handle_by_team_abbr", async (req, res) => {
 router.get("/total-handle", async (req, res) => {
   const groupBy = req.query.groupBy || "day"; // Default grouping by day
   const betType = req.query.betType; // Bet type ('single' or 'multi')
+  const startDateTime = req.query.startDateTime;
+  const endDateTime = req.query.endDateTime;
 
-  const key = `total-handle_${groupBy}${betType ? `_${betType}` : ""}`;
+  const key = `total-handle_${groupBy}${
+    betType ? `_${betType}` : ""
+  }_${startDateTime}_${endDateTime}`;
   const cachedData = analyticsCache.get(key);
 
   if (cachedData) {
     res.json(cachedData);
   } else {
     try {
+      let whereClause = betType ? `WHERE bet_type = '${betType}'` : "WHERE 1=1";
+      if (startDateTime && endDateTime) {
+        whereClause += ` AND accepted_datetime_utc BETWEEN DATE('${startDateTime}') AND DATE('${endDateTime}')`;
+      }
       let query = "";
 
       if (groupBy === "hour") {
         query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:00:00') as bet_time, SUM(book_risk) as total_handle
                  FROM bet_transactions
-                 ${betType ? `WHERE bet_type = '${betType}'` : ""}
+                 ${whereClause}
                  GROUP BY bet_time
                  ORDER BY bet_time`;
       } else {
         // Default to group by day
         query = `SELECT DATE(accepted_datetime_utc) as bet_date, SUM(book_risk) as total_handle
                  FROM bet_transactions
-                 ${betType ? `WHERE bet_type = '${betType}'` : ""}
+                 ${whereClause}
                  GROUP BY bet_date
                  ORDER BY bet_date`;
       }

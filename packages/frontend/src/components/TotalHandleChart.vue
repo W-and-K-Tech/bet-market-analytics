@@ -37,9 +37,19 @@ ChartJS.register(
   Legend,
 )
 
-const loadData = async (groupBy = 'hour', betType?: 'single' | 'multi') => {
+const loadData = async ({
+  groupBy = 'hour',
+  betType,
+  startDateTime,
+  endDateTime,
+}: { groupBy: 'hour', betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date }) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/analytics/total-handle?groupBy=${groupBy}${betType ? `&betType=${betType}` : ''}`);
+    const url = new URL("http://localhost:3000/api/analytics/total-handle");
+    url.searchParams.append('groupBy', groupBy);
+    if (betType) url.searchParams.append('betType', betType);
+    if (startDateTime) url.searchParams.append('startDateTime', startDateTime.toISOString());
+    if (endDateTime) url.searchParams.append('endDateTime', endDateTime.toISOString());
+    const response = await fetch(url.href);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -92,10 +102,10 @@ const options: ChartOptions<'line'> = {
 const chartData = ref<ChartData | null>(null);
 
 onMounted(async () => {
-  const totalHandleByHour = await loadData('hour');
+  const totalHandleByHour = await loadData({ groupBy: 'hour' });
   settingStore.fillInitialDateTimeRange(new Date(totalHandleByHour[0].bet_time), new Date(totalHandleByHour[totalHandleByHour.length - 1].bet_time))
-  const totalSingleBetByHour = await loadData('hour', 'single');
-  const totalMultiBetByHour = await loadData('hour', 'multi');
+  const totalSingleBetByHour = await loadData({ groupBy: 'hour', betType: 'single' });
+  const totalMultiBetByHour = await loadData({ groupBy: 'hour', betType: 'multi' });
   const totalTimeDividends = totalHandleByHour.map(item => item.bet_time);
 
   chartData.value = {
