@@ -1,25 +1,31 @@
 <script setup lang="ts">
 import Calendar from 'primevue/calendar';
 import { useSettingsStore } from "@/stores/settings";
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 
 const settingStore = useSettingsStore();
 
-const startDateTime = computed({
-  get: () => settingStore.startDateTime,
-  set: (value) => settingStore.setStartDateTime(value),
+const startDateTime = ref();
+const endDateTime = ref();
+
+const handleTimeRangeChangeClick = () => {
+  settingStore.setStartDateTime(startDateTime.value);
+  settingStore.setEndDateTime(endDateTime.value);
+}
+
+watch(() => settingStore.minDateTime, (value) => {
+  startDateTime.value = value;
 });
 
-const endDateTime = computed({
-  get: () => settingStore.endDateTime,
-  set: (value) => settingStore.setEndDateTime(value),
+watch(() => settingStore.maxDateTime, (value) => {
+  endDateTime.value = value;
 });
 </script>
 
 <template>
-  <div v-if="settingStore.isAllDateTimeFilled">
+  <div v-if="settingStore.minDateTime && settingStore.maxDateTime">
     <Card>
       <template #title>
         Report Range: {{ startDateTime.toLocaleString() }} - {{ endDateTime.toLocaleString() }}
@@ -37,7 +43,7 @@ const endDateTime = computed({
             <Calendar id="end-date-time" :minDate="startDateTime" :maxDate="settingStore.maxDateTime"
               v-model="endDateTime" showTime hourFormat="12" />
           </div>
-          <Button label="Submit" />
+          <Button label="Submit" :onclick="handleTimeRangeChangeClick" />
         </div>
       </template>
     </Card>

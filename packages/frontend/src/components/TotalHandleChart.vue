@@ -17,7 +17,7 @@ import {
   type ChartOptions,
   type ChartData,
 } from 'chart.js';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Line } from 'vue-chartjs'
 import numeral from 'numeral';
 import { format, startOfDay, isEqual } from 'date-fns';
@@ -101,11 +101,17 @@ const options: ChartOptions<'line'> = {
 
 const chartData = ref<ChartData | null>(null);
 
-onMounted(async () => {
-  const totalHandleByHour = await loadData({ groupBy: 'hour' });
-  settingStore.fillInitialDateTimeRange(new Date(totalHandleByHour[0].bet_time), new Date(totalHandleByHour[totalHandleByHour.length - 1].bet_time))
-  const totalSingleBetByHour = await loadData({ groupBy: 'hour', betType: 'single' });
-  const totalMultiBetByHour = await loadData({ groupBy: 'hour', betType: 'multi' });
+const fetchChartData = async ({
+  groupBy = 'hour',
+  betType,
+  startDateTime,
+  endDateTime,
+}: {
+  groupBy?: 'hour', betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date
+}) => {
+  const totalHandleByHour = await loadData({ groupBy: 'hour', betType, startDateTime, endDateTime });
+  const totalSingleBetByHour = await loadData({ groupBy: 'hour', betType: 'single', startDateTime, endDateTime });
+  const totalMultiBetByHour = await loadData({ groupBy: 'hour', betType: 'multi', startDateTime, endDateTime });
   const totalTimeDividends = totalHandleByHour.map(item => item.bet_time);
 
   chartData.value = {
@@ -155,5 +161,19 @@ onMounted(async () => {
       },
     ]
   };
+  return [new Date(totalHandleByHour[0].bet_time), new Date(totalHandleByHour[totalHandleByHour.length - 1].bet_time)];
+}
+
+watch(() => [settingStore.startDateTime, settingStore.endDateTime], () => {
+  console.log('settingStore changed')
+  fetchChartData({
+    startDateTime: settingStore.startDateTime,
+    endDateTime: settingStore.endDateTime,
+  });
+});
+
+onMounted(async () => {
+  const [startDateTime, endDateTime] = await fetchChartData({})
+  settingStore.fillMinMaxDateTimeRange(startDateTime, endDateTime);
 });
 </script>

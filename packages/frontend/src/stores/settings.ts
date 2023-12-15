@@ -1,6 +1,5 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
-import { set } from "date-fns";
 
 export const useSettingsStore = defineStore("settings", () => {
   const minDateTime = ref();
@@ -13,19 +12,9 @@ export const useSettingsStore = defineStore("settings", () => {
   const setStartDateTime = (date: Date) => (startDateTime.value = date);
   const setEndDateTime = (date: Date) => (endDateTime.value = date);
 
-  const isAllDateTimeFilled = computed(
-    () =>
-      !!minDateTime.value &&
-      !!maxDateTime.value &&
-      !!startDateTime.value &&
-      !!endDateTime.value
-  );
-
-  const fillInitialDateTimeRange = (startDateTime: Date, endDateTime: Date) => {
+  const fillMinMaxDateTimeRange = (startDateTime: Date, endDateTime: Date) => {
     setMinDateTime(startDateTime);
-    setStartDateTime(startDateTime);
     setMaxDateTime(endDateTime);
-    setEndDateTime(endDateTime);
   };
 
   return {
@@ -37,7 +26,6 @@ export const useSettingsStore = defineStore("settings", () => {
     setMaxDateTime,
     setStartDateTime,
     setEndDateTime,
-    isAllDateTimeFilled,
-    fillInitialDateTimeRange,
+    fillMinMaxDateTimeRange,
   };
 });
