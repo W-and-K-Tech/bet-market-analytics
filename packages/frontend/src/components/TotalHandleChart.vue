@@ -22,6 +22,9 @@ import { Line } from 'vue-chartjs'
 import numeral from 'numeral';
 import { format, startOfDay, isEqual } from 'date-fns';
 import 'chartjs-adapter-date-fns';
+import { useSettingsStore } from '@/stores/settings';
+
+const settingStore = useSettingsStore();
 
 ChartJS.register(
   CategoryScale,
@@ -90,6 +93,7 @@ const chartData = ref<ChartData | null>(null);
 
 onMounted(async () => {
   const totalHandleByHour = await loadData('hour');
+  settingStore.fillInitialDateTimeRange(new Date(totalHandleByHour[0].bet_time), new Date(totalHandleByHour[totalHandleByHour.length - 1].bet_time))
   const totalSingleBetByHour = await loadData('hour', 'single');
   const totalMultiBetByHour = await loadData('hour', 'multi');
   const totalTimeDividends = totalHandleByHour.map(item => item.bet_time);

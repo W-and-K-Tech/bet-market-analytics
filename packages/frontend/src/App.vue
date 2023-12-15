@@ -1,19 +1,38 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { RouterView, useRouter } from "vue-router";
+import Menubar from 'primevue/menubar';
+import { ref } from "vue";
+
+const router = useRouter();
+
+const items = ref([
+  {
+    label: 'Home',
+    icon: 'pi pi-fw pi-home',
+    command: () => {
+      router.push('/');
+    }
+  },
+  {
+    label: 'About',
+    icon: 'pi pi-fw pi-flag',
+    command: () => {
+      router.push('/about');
+    }
+  },
+]);
+
 </script>
 
 <template>
   <header>
-    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
 
     <div class="flex h-12">
-      <!-- <HelloWorld msg="You did it!" /> -->
-      <h1>NBA Game Bet Transaction Analytics Dashboard</h1>
-      <nav class="ml-12 flex gap-4">
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      <Menubar :model="items" class="w-full">
+        <template #start>
+          <h1 class="font-bold">NBA Game Bet Transaction Analytics Dashboard</h1>
+        </template>
+      </Menubar>
     </div>
   </header>
 
