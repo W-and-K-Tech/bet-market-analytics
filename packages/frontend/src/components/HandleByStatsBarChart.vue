@@ -6,8 +6,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, type ChartData } from 'chart.js';
 import numeral from 'numeral';
+import { generateColors } from '../utils/index.ts';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -47,7 +48,7 @@ const fetchChartData = async () => {
       datasets: [{
         label: 'Total Bet Handle',
         data: data.map((item: any) => item.total_handle).slice(0, 10),
-        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+        backgroundColor: generateColors(data.length),
       }]
     };
   } catch (error) {
