@@ -4,17 +4,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, type ChartData } from 'chart.js';
 import numeral from 'numeral';
-import { generateColors } from '../utils/index.ts';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const { groupType } = defineProps<{ groupType: 'stat_type' | 'player_name' }>();
+const { chartData } = defineProps<{ chartData: ChartData | null }>();
 
-const chartData = ref<ChartData | null>(null);
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -39,28 +36,4 @@ const chartOptions = {
     }
   },
 };
-
-const fetchChartData = async () => {
-  try {
-    const response = await fetch(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
-    const data = await response.json();
-
-    chartData.value = {
-      labels: data.map((item: any) => item[groupType]).slice(0, 10),
-      datasets: [{
-        label: 'Total Bet Handle',
-        data: data.map((item: any) => item.total_handle).slice(0, 10),
-        backgroundColor: generateColors(data.length),
-      }]
-    };
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
-
-onMounted(fetchChartData);
 </script>
-
-<style scoped>
-/* Add styles here if necessary */
-</style>

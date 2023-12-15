@@ -8,10 +8,11 @@ import { ref, onMounted } from 'vue';
 import { Pie } from 'vue-chartjs';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, type ChartData } from 'chart.js';
 import { generateColors } from '../utils/index.ts';
+import type { GroupType } from '@/utils/types';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const { groupType } = defineProps<{ groupType: 'stat_type' | 'player_name' }>();
+const { groupType } = defineProps<{ groupType: GroupType }>();
 
 const chartData = ref<ChartData | null>(null);
 const chartOptions = {
