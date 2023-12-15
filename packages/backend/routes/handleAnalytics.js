@@ -16,6 +16,34 @@ const connectionSettings = {
   database: process.env.DB_DATABASE,
 };
 
+router.get("/handle-by-stat-type", async (req, res) => {
+  const key = `handle-by-stat-type`;
+  const cachedData = analyticsCache.get(key);
+  if (cachedData) {
+    res.json(cachedData);
+  } else {
+    try {
+      const connection = await mysql.createConnection(connectionSettings);
+      const query = `
+      SELECT stat_type, SUM(book_risk) as total_handle
+      FROM bet_transactions
+      GROUP BY stat_type
+      ORDER BY total_handle DESC
+    `;
+
+      const [rows] = await connection.execute(query);
+      await connection.end();
+
+      analyticsCache.set(key, rows);
+
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).send("Server Error");
+    }
+  }
+});
+
 router.get("/total-handle", async (req, res) => {
   const groupBy = req.query.groupBy || "day"; // Default grouping by day
   const betType = req.query.betType; // Bet type ('single' or 'multi')
@@ -45,7 +73,6 @@ router.get("/total-handle", async (req, res) => {
                  ORDER BY bet_date`;
       }
 
-      console.log("query", query);
       const [rows] = await conn.execute(query);
       await conn.end();
 

@@ -1,4 +1,5 @@
 <template>
+  <h2>Total Handle Through Time</h2>
   <Line v-if="chartData" :data="chartData" :options="options" />
 </template>
 
