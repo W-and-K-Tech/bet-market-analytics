@@ -1,5 +1,5 @@
 <template>
-  <h2>TOP 10 Betting Markets</h2>
+  <h2>{{ title }}</h2>
   <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
 </template>
 
@@ -10,7 +10,7 @@ import numeral from 'numeral';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const { chartData } = defineProps<{ chartData: ChartData | null }>();
+const { title, chartData } = defineProps<{ title: string; chartData: ChartData | null }>();
 
 const chartOptions = {
   responsive: true,
