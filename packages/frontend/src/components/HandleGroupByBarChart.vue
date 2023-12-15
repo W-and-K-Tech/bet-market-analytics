@@ -12,6 +12,8 @@ import { generateColors } from '../utils/index.ts';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+const { groupType } = defineProps<{ groupType: 'stat_type' | 'player_name' }>();
+
 const chartData = ref<ChartData | null>(null);
 const chartOptions = {
   responsive: true,
@@ -40,11 +42,11 @@ const chartOptions = {
 
 const fetchChartData = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/analytics/handle-by-stat-type');
+    const response = await fetch(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
     const data = await response.json();
 
     chartData.value = {
-      labels: data.map((item: any) => item.stat_type).slice(0, 10),
+      labels: data.map((item: any) => item[groupType]).slice(0, 10),
       datasets: [{
         label: 'Total Bet Handle',
         data: data.map((item: any) => item.total_handle).slice(0, 10),

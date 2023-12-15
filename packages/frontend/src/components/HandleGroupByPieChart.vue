@@ -11,6 +11,8 @@ import { generateColors } from '../utils/index.ts';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const { groupType } = defineProps<{ groupType: 'stat_type' | 'player_name' }>();
+
 const chartData = ref<ChartData | null>(null);
 const chartOptions = {
   responsive: true,
@@ -19,7 +21,7 @@ const chartOptions = {
 
 const fetchChartData = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/analytics/handle-by-stat-type');
+    const response = await fetch(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
     const data = await response.json();
 
     // Sort data by total_handle in descending order
@@ -34,7 +36,7 @@ const fetchChartData = async () => {
     // Add 'Other' category if there are more than 10 items
     if (data.length > 10) {
       topItems.push({
-        stat_type: 'Other',
+        [groupType]: 'Other',
         total_handle: otherTotalHandle
       });
     }
@@ -43,7 +45,7 @@ const fetchChartData = async () => {
     const backgroundColors = generateColors(topItems.length);
 
     chartData.value = {
-      labels: topItems.map((item: any) => item.stat_type),
+      labels: topItems.map((item: any) => item[groupType]),
       datasets: [{
         label: 'Percentage of Total Handle',
         data: topItems.map((item: any) => (item.total_handle / totalHandle) * 100),

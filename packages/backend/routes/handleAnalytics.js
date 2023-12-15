@@ -16,23 +16,47 @@ const connectionSettings = {
   database: process.env.DB_DATABASE,
 };
 
-router.get("/handle-by-stat-type", async (req, res) => {
-  const key = `handle-by-stat-type`;
+const generateHandleGroupByQuery = (groupBy) => `
+SELECT ${groupBy}, SUM(book_risk) as total_handle
+FROM bet_transactions
+GROUP BY ${groupBy}
+ORDER BY total_handle DESC
+`;
+
+const runQuery = async (query) => {
+  const connection = await mysql.createConnection(connectionSettings);
+  const [rows] = await connection.execute(query);
+  connection.end();
+  return rows;
+};
+
+router.get("/handle_by_stat_type", async (req, res) => {
+  const key = `handle_by_stat_type`;
   const cachedData = analyticsCache.get(key);
   if (cachedData) {
     res.json(cachedData);
   } else {
     try {
-      const connection = await mysql.createConnection(connectionSettings);
-      const query = `
-      SELECT stat_type, SUM(book_risk) as total_handle
-      FROM bet_transactions
-      GROUP BY stat_type
-      ORDER BY total_handle DESC
-    `;
+      const rows = await runQuery(generateHandleGroupByQuery("stat_type"));
 
-      const [rows] = await connection.execute(query);
-      await connection.end();
+      analyticsCache.set(key, rows);
+
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).send("Server Error");
+    }
+  }
+});
+
+router.get("/handle_by_player_name", async (req, res) => {
+  const key = `handle_by_player_name`;
+  const cachedData = analyticsCache.get(key);
+  if (cachedData) {
+    res.json(cachedData);
+  } else {
+    try {
+      const rows = await runQuery(generateHandleGroupByQuery("player_name"));
 
       analyticsCache.set(key, rows);
 
@@ -55,7 +79,6 @@ router.get("/total-handle", async (req, res) => {
     res.json(cachedData);
   } else {
     try {
-      const conn = await mysql.createConnection(connectionSettings);
       let query = "";
 
       if (groupBy === "hour") {
@@ -73,9 +96,7 @@ router.get("/total-handle", async (req, res) => {
                  ORDER BY bet_date`;
       }
 
-      const [rows] = await conn.execute(query);
-      await conn.end();
-
+      const rows = await runQuery(query);
       analyticsCache.set(key, rows);
 
       res.json(rows);
