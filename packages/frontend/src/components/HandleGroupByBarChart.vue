@@ -10,7 +10,7 @@ import numeral from 'numeral';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const { title, chartData } = defineProps<{ title: string; chartData: ChartData | null }>();
+const { title, chartData } = defineProps<{ title?: string; chartData: ChartData | null }>();
 
 const chartOptions = {
   responsive: true,

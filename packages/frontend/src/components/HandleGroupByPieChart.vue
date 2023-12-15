@@ -9,7 +9,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, type ChartData } from 'c
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const { title, chartData } = defineProps<{ title: string; chartData: ChartData | null }>();
+const { title, chartData } = defineProps<{ title?: string; chartData: ChartData | null }>();
 
 const chartOptions = {
   responsive: true,

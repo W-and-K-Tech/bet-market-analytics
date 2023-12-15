@@ -5,6 +5,7 @@ import { type GroupType } from '@/utils/types';
 import { generateColors } from '@/utils/index';
 import type { ChartData } from "chart.js";
 import { computed, onMounted, reactive, ref } from "vue";
+import Button from 'primevue/button';
 
 const colorSet: { [key in GroupType]: any[] } = {
   'stat_type': generateColors(50),
@@ -24,6 +25,7 @@ const totalHandleDataByGroup = reactive<{ [key in GroupType]: any[] | null }>({
   'team_abbr': null,
 });
 
+const groups = Object.keys(totalHandleDataByGroup) as GroupType[];
 const currentGroup = ref<GroupType>('stat_type');
 const currentGroupTitle = computed<string>(() => groupTitleMap[currentGroup.value]);
 
@@ -93,20 +95,24 @@ async function fetchData(groupType: GroupType) {
 </script>
 
 <template>
-  <h2>Total Handle Performance</h2>
   <div>
-    <span>Market</span>
-    <button :onclick="async () => handleClickMarketType('stat_type')">{{ groupTitleMap['stat_type'] }}</button>
-    <button :onclick="async () => handleClickMarketType('player_name')">{{ groupTitleMap['player_name'] }}</button>
-    <button :onclick="async () => handleClickMarketType('team_abbr')">{{ groupTitleMap['team_abbr'] }}</button>
+    <h2 class="text-2xl">Total Handle Performance</h2>
+    <div class="flex items-center gap-12">
+      <h3 class="text-lg">Market</h3>
+      <div class="flex gap-4">
+        <Button :key="group" v-for="group in groups" severity="info" :outlined="currentGroup !== group"
+          :onclick="async () => handleClickMarketType(group)" :label="groupTitleMap[group]" />
+      </div>
+    </div>
+    <h3>{{ `TOP 10 ${currentGroupTitle} Betting Performance` }}</h3>
   </div>
 
   <div class="flex">
     <div class="h-96 w-3/4">
-      <HandleGroupByBarChart :title="`TOP 10 ${currentGroupTitle} Betting Performance`" :chartData="barChartData" />
+      <HandleGroupByBarChart :chartData="barChartData" />
     </div>
     <div class="h-96 w-1/4">
-      <HandleGroupByPieChart title="" :chartData="pieChartData" />
+      <HandleGroupByPieChart :chartData="pieChartData" />
     </div>
   </div>
 </template>

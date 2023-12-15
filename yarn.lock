@@ -3877,6 +3877,11 @@ pretty-format@^29.7.0:
     ansi-styles "^5.0.0"
     react-is "^18.0.0"
 
+primevue@^3.44.0:
+  version "3.44.0"
+  resolved "https://registry.yarnpkg.com/primevue/-/primevue-3.44.0.tgz#b69a84b0158300f804fed0fbdac86d863c5ac535"
+  integrity sha512-BqSg6rKP0vq7WRHhLlVt4BD4rQZbVVXjgSfOAcebv3mO4wJZcJbgC04mxAI9fl26PhmPy1jLOuCtNOBWo7IekA==
+
 process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"

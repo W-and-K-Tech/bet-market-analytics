@@ -8,8 +8,10 @@ import TotalHandleChart from "../components/TotalHandleChart.vue";
     <div class="h-96">
       <TotalHandleChart />
     </div>
-    <Suspense>
-      <DimensionalAnalyticsView />
-    </Suspense>
+    <div>
+      <Suspense>
+        <DimensionalAnalyticsView />
+      </Suspense>
+    </div>
   </main>
 </template>
