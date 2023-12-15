@@ -9,16 +9,19 @@ import { computed, onMounted, reactive, ref } from "vue";
 const colorSet: { [key in GroupType]: any[] } = {
   'stat_type': generateColors(50),
   'player_name': generateColors(50),
+  'team_abbr': generateColors(2),
 };
 
-const groupTitleMap = {
+const groupTitleMap: { [key in GroupType]: string } = {
   'stat_type': 'Stat',
   'player_name': 'Player',
+  'team_abbr': 'Team',
 }
 
 const totalHandleDataByGroup = reactive<{ [key in GroupType]: any[] | null }>({
   'stat_type': null,
   'player_name': null,
+  'team_abbr': null,
 });
 
 const currentGroup = ref<GroupType>('stat_type');
@@ -90,11 +93,12 @@ async function fetchData(groupType: GroupType) {
 </script>
 
 <template>
-  <h2>Handle Performance</h2>
+  <h2>Total Handle Performance</h2>
   <div>
     <span>Market</span>
-    <button :onclick="async () => handleClickMarketType('stat_type')">Stat</button>
-    <button :onclick="async () => handleClickMarketType('player_name')">Player</button>
+    <button :onclick="async () => handleClickMarketType('stat_type')">{{ groupTitleMap['stat_type'] }}</button>
+    <button :onclick="async () => handleClickMarketType('player_name')">{{ groupTitleMap['player_name'] }}</button>
+    <button :onclick="async () => handleClickMarketType('team_abbr')">{{ groupTitleMap['team_abbr'] }}</button>
   </div>
 
   <div class="flex">

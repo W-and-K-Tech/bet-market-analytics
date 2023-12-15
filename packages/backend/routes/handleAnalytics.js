@@ -68,6 +68,25 @@ router.get("/handle_by_player_name", async (req, res) => {
   }
 });
 
+router.get("/handle_by_team_abbr", async (req, res) => {
+  const key = `handle_by_team_abbr`;
+  const cachedData = analyticsCache.get(key);
+  if (cachedData) {
+    res.json(cachedData);
+  } else {
+    try {
+      const rows = await runQuery(generateHandleGroupByQuery("team_abbr"));
+
+      analyticsCache.set(key, rows);
+
+      res.json(rows);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).send("Server Error");
+    }
+  }
+});
+
 router.get("/total-handle", async (req, res) => {
   const groupBy = req.query.groupBy || "day"; // Default grouping by day
   const betType = req.query.betType; // Bet type ('single' or 'multi')
