@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
   TimeScale,
+  Filler,
   type ChartOptions,
   type ChartData,
 } from 'chart.js';
@@ -45,6 +46,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   zoomPlugin,
+  Filler,
 )
 
 const loadData = async ({
@@ -71,7 +73,18 @@ const loadData = async ({
 const options: ChartOptions<'line'> = {
   responsive: true,
   maintainAspectRatio: false,
+  interaction: {
+    intersect: false,
+  },
+  elements: {
+    line: {
+      tension: 0.4,
+    },
+  },
   plugins: {
+    filler: {
+      propagate: false,
+    },
     tooltip: {
       callbacks: {
         label: function ({ raw }) {
@@ -104,7 +117,10 @@ const options: ChartOptions<'line'> = {
           }
           return format(date, 'h a'); // Show only time for other ticks
         }
-      }
+      },
+      grid: {
+        display: false,
+      },
     },
     y: {
       ticks: {
@@ -136,20 +152,6 @@ const fetchChartData = async ({
     labels: totalTimeDividends.map(item => dayjs.utc(item).toDate()),
     datasets: [
       {
-        label: `Total Handle`,
-        data: totalTimeDividends.map(time => {
-          const matchingTimeDividend = totalHandleByHour.find((item) => item.bet_time === time);
-          if (matchingTimeDividend) {
-            return matchingTimeDividend.total_handle;
-          } else {
-            return 0;
-          }
-        }),
-        backgroundColor: 'rgba(139, 92, 246)',
-        borderColor: 'rgba(196, 181, 253)',
-        borderWidth: 2,
-      },
-      {
         label: `Total Single Bet`,
         data: totalTimeDividends.map(time => {
           const matchingTimeDividend = totalSingleBetByHour.find((item) => item.bet_time === time);
@@ -159,9 +161,11 @@ const fetchChartData = async ({
             return 0;
           }
         }),
-        backgroundColor: 'rgba(16, 185, 129)',
-        borderColor: 'rgba(167, 243, 208)',
-        borderWidth: 2
+        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+        borderColor: 'rgba(16, 185, 129)',
+        borderWidth: 1,
+        fill: 'start',
+        pointRadius: 2,
       },
       {
         label: `Total Multi-Bet`,
@@ -173,9 +177,27 @@ const fetchChartData = async ({
             return 0;
           }
         }),
-        backgroundColor: 'rgba(245, 158, 11)',
-        borderColor: 'rgba(253, 230, 138)',
-        borderWidth: 2
+        backgroundColor: 'rgba(245, 158, 11, 0.4)',
+        borderColor: 'rgba(245, 158, 11)',
+        borderWidth: 1,
+        fill: 'start',
+        pointRadius: 2,
+      },
+      {
+        label: `Total Handle`,
+        data: totalTimeDividends.map(time => {
+          const matchingTimeDividend = totalHandleByHour.find((item) => item.bet_time === time);
+          if (matchingTimeDividend) {
+            return matchingTimeDividend.total_handle;
+          } else {
+            return 0;
+          }
+        }),
+        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+        borderColor: 'rgba(139, 92, 246)',
+        borderWidth: 1,
+        fill: 'start',
+        pointRadius: 2,
       },
     ]
   };
