@@ -1,6 +1,7 @@
 <template>
   <h2>Total Handle Through Time</h2>
-  <Line v-if="chartData" :data="chartData" :options="options" />
+  <Button text label="reset" :onclick="() => chartRef?.chart.resetZoom()" />
+  <Line ref="chartRef" v-if="chartData" :data="chartData" :options="options" />
 </template>
 
 <script lang="ts" setup>
@@ -26,7 +27,11 @@ import { useSettingsStore } from '@/stores/settings';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { TimeSpanOptions } from '@/utils/types';
-dayjs.extend(utc)
+import zoomPlugin from 'chartjs-plugin-zoom';
+import Button from 'primevue/button';
+dayjs.extend(utc);
+
+const chartRef = ref(null);
 
 const settingStore = useSettingsStore();
 
@@ -39,6 +44,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  zoomPlugin,
 )
 
 const loadData = async ({
@@ -73,6 +79,17 @@ const options: ChartOptions<'line'> = {
         },
       },
     },
+    zoom: {
+      zoom: {
+        wheel: {
+          enabled: true,
+        },
+        pinch: {
+          enabled: true
+        },
+        mode: 'x',
+      },
+    }
   },
   scales: {
     x: {
