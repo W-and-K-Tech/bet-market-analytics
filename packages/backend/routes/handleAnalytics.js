@@ -111,24 +111,24 @@ router.get("/total-handle", async (req, res) => {
       let query = "";
 
       if (groupBy === "hour") {
-        query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:00:00') as bet_time, SUM(book_risk) as total_handle
+        query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:00:00') as bet_time, SUM(book_risk) as total_handle, currency
                  FROM bet_transactions
                  ${whereClause}
-                 GROUP BY bet_time
-                 ORDER BY bet_time`;
+                 GROUP BY bet_time, currency
+                 ORDER BY bet_time, currency`;
       } else if (groupBy === "minute") {
-        query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:%i:00') as bet_time, SUM(book_risk) as total_handle
+        query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:%i:00') as bet_time, SUM(book_risk) as total_handle, currency
                  FROM bet_transactions
                  ${whereClause}
-                 GROUP BY bet_time
-                 ORDER BY bet_time`;
+                 GROUP BY bet_time, currency
+                 ORDER BY bet_time, currency`;
       } else {
         // Default to group by day
-        query = `SELECT DATE(accepted_datetime_utc) as bet_date, SUM(book_risk) as total_handle
+        query = `SELECT DATE(accepted_datetime_utc) as bet_date, SUM(book_risk) as total_handle, currency
                  FROM bet_transactions
                  ${whereClause}
-                 GROUP BY bet_date
-                 ORDER BY bet_date`;
+                 GROUP BY bet_date, currency
+                 ORDER BY bet_date, currency`;
       }
 
       const rows = await runQuery(query);

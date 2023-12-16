@@ -25,6 +25,7 @@ import 'chartjs-adapter-date-fns';
 import { TimeSpanOptions } from '@/utils/types';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import Button from 'primevue/button';
+import { ref } from 'vue';
 
 ChartJS.register(
   CategoryScale,
@@ -40,6 +41,8 @@ ChartJS.register(
 )
 
 const { chartData } = defineProps<{ chartData: ChartData | null }>();
+
+const chartRef = ref<ChartJS | null>(null);
 
 const options: ChartOptions<'line'> = {
   responsive: true,

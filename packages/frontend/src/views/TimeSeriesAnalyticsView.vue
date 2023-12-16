@@ -17,7 +17,7 @@ import TotalHandleChart from "../components/TotalHandleChart.vue";
 import TotalHandleTable from "../components/TotalHandleTable.vue";
 import { onMounted, ref, watch } from "vue";
 import { useSettingsStore } from "@/stores/settings";
-import { TimeSpanOptions } from "@/utils/types";
+import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
@@ -25,12 +25,21 @@ dayjs.extend(utc);
 const chartData = ref<ChartData | null>(null);
 const settingStore = useSettingsStore();
 
+interface RequestType {
+  groupBy?: TimeSpanOptions,
+  betType?: 'single' | 'multi',
+  startDateTime?: Date,
+  endDateTime?: Date,
+  currency: CurrencyType,
+}
+
 const loadData = async ({
   groupBy = TimeSpanOptions.Hourly,
   betType,
   startDateTime,
   endDateTime,
-}: { groupBy: TimeSpanOptions, betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date }) => {
+  currency,
+}: RequestType) => {
   try {
     const url = new URL("http://localhost:3000/api/analytics/total-handle");
     url.searchParams.append('groupBy', groupBy);
@@ -38,8 +47,8 @@ const loadData = async ({
     if (startDateTime) url.searchParams.append('startDateTime', dayjs(startDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
     if (endDateTime) url.searchParams.append('endDateTime', dayjs(endDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
     const response = await fetch(url.href);
-    const data = await response.json();
-    return data;
+    const data = await response.json() as Array<any>;
+    return data.filter((item) => item.currency === currency);
   } catch (error) {
     console.error('Error fetching data:', error);
     return null;
@@ -51,12 +60,11 @@ const fetchChartData = async ({
   betType,
   startDateTime,
   endDateTime,
-}: {
-  groupBy?: TimeSpanOptions, betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date
-}) => {
-  const totalHandleByHour = await loadData({ groupBy, betType, startDateTime, endDateTime });
-  const totalSingleBetByHour = await loadData({ groupBy, betType: 'single', startDateTime, endDateTime });
-  const totalMultiBetByHour = await loadData({ groupBy, betType: 'multi', startDateTime, endDateTime });
+  currency,
+}: RequestType) => {
+  const totalHandleByHour = await loadData({ groupBy, betType, startDateTime, endDateTime, currency });
+  const totalSingleBetByHour = await loadData({ groupBy, betType: 'single', startDateTime, endDateTime, currency });
+  const totalMultiBetByHour = await loadData({ groupBy, betType: 'multi', startDateTime, endDateTime, currency });
   const totalTimeDividends = totalHandleByHour.map(item => item.bet_time);
 
   chartData.value = {
@@ -115,16 +123,22 @@ const fetchChartData = async ({
   return [dayjs.utc(totalHandleByHour[0].bet_time), dayjs.utc(totalHandleByHour[totalHandleByHour.length - 1].bet_time)];
 }
 
-watch(() => [settingStore.startDateTime, settingStore.endDateTime, settingStore.selectedTimeSpan], () => {
+watch(() => [
+  settingStore.startDateTime,
+  settingStore.endDateTime,
+  settingStore.selectedTimeSpan,
+  settingStore.selectedCurrency
+], () => {
   fetchChartData({
     groupBy: settingStore.selectedTimeSpan,
     startDateTime: settingStore.startDateTime,
     endDateTime: settingStore.endDateTime,
+    currency: settingStore.selectedCurrency,
   });
 });
 
 onMounted(async () => {
-  const [startDateTime, endDateTime] = await fetchChartData({ groupBy: settingStore.selectedTimeSpan })
+  const [startDateTime, endDateTime] = await fetchChartData({ groupBy: settingStore.selectedTimeSpan, currency: settingStore.selectedCurrency })
   settingStore.fillMinMaxDateTimeRange(startDateTime.toDate(), endDateTime.toDate());
 });
 </script>

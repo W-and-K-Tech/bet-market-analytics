@@ -30,6 +30,7 @@ const handleTimeRangeChangeClick = () => {
   settingStore.setStartDateTime(startDateTime.value);
   settingStore.setEndDateTime(endDateTime.value);
   settingStore.setSelectedTimeSpan(selectedTimeSpan.value.value);
+  settingStore.setSelectedCurrency(selectedCurrency.value.value);
 }
 
 onBeforeMount(() => {
