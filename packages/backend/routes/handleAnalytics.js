@@ -104,12 +104,20 @@ router.get("/total-handle", async (req, res) => {
     try {
       let whereClause = betType ? `WHERE bet_type = '${betType}'` : "WHERE 1=1";
       if (startDateTime && endDateTime) {
-        whereClause += ` AND accepted_datetime_utc BETWEEN DATE('${startDateTime}') AND DATE('${endDateTime}')`;
+        whereClause += ` AND accepted_datetime_utc BETWEEN '${decodeURIComponent(
+          startDateTime
+        )}' AND '${decodeURIComponent(endDateTime)}'`;
       }
       let query = "";
 
       if (groupBy === "hour") {
         query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:00:00') as bet_time, SUM(book_risk) as total_handle
+                 FROM bet_transactions
+                 ${whereClause}
+                 GROUP BY bet_time
+                 ORDER BY bet_time`;
+      } else if (groupBy === "minute") {
+        query = `SELECT DATE_FORMAT(accepted_datetime_utc, '%Y-%m-%d %H:%i:00') as bet_time, SUM(book_risk) as total_handle
                  FROM bet_transactions
                  ${whereClause}
                  GROUP BY bet_time
