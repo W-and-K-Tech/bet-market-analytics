@@ -5,7 +5,7 @@ import { onBeforeMount, ref, watch } from 'vue';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Dropdown from 'primevue/dropdown';
-import { TimeSpanOptions } from '@/utils/types';
+import { CurrencyType, TimeSpanOptions } from '@/utils/types';
 
 const settingStore = useSettingsStore();
 
@@ -18,6 +18,14 @@ const timeSpans = ref([
 ]);
 const selectedTimeSpan = ref(timeSpans.value[1]);
 
+const curriencies = ref([
+  { name: 'USD', value: CurrencyType.USD },
+  { name: 'EUR', value: CurrencyType.EUR },
+  { name: 'AUSD', value: CurrencyType.AUSD },
+  { name: 'CAD', value: CurrencyType.CAD },
+]);
+const selectedCurrency = ref(curriencies.value[0]);
+
 const handleTimeRangeChangeClick = () => {
   settingStore.setStartDateTime(startDateTime.value);
   settingStore.setEndDateTime(endDateTime.value);
@@ -28,6 +36,7 @@ onBeforeMount(() => {
   startDateTime.value = settingStore.minDateTime;
   endDateTime.value = settingStore.maxDateTime;
   selectedTimeSpan.value = timeSpans.value.find((timeSpan) => timeSpan.value === settingStore.selectedTimeSpan) ?? timeSpans.value[1];
+  selectedCurrency.value = curriencies.value.find((currency) => currency.value === settingStore.selectedCurrency) ?? curriencies.value[0];
 })
 
 watch(() => settingStore.minDateTime, (value) => {
@@ -62,8 +71,13 @@ watch(() => settingStore.maxDateTime, (value) => {
           </div>
           <div>
             <label for="time-span" class="font-bold block mb-2"> Time Span </label>
-            <Dropdown v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
+            <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
               placeholder="Select a Time Span" />
+          </div>
+          <div>
+            <label for="currencies" class="font-bold block mb-2"> Currency </label>
+            <Dropdown id="currencies" v-model="selectedCurrency" :options="curriencies" optionLabel="name"
+              placeholder="Select Currency" />
           </div>
           <Button severity="info" label="Query" :onclick="handleTimeRangeChangeClick" />
         </div>

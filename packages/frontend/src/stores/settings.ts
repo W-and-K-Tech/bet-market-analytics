@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { TimeSpanOptions } from "@/utils/types";
+import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 
 export const useSettingsStore = defineStore("settings", () => {
   const minDateTime = ref();
@@ -17,6 +17,10 @@ export const useSettingsStore = defineStore("settings", () => {
   const setSelectedTimeSpan = (option: TimeSpanOptions) =>
     (selectedTimeSpan.value = option);
 
+  const selectedCurrency = ref(CurrencyType.USD);
+  const setSelectedCurrency = (currency: CurrencyType) =>
+    (selectedCurrency.value = currency);
+
   const fillMinMaxDateTimeRange = (startDateTime: Date, endDateTime: Date) => {
     setMinDateTime(startDateTime);
     setMaxDateTime(endDateTime);
@@ -28,11 +32,13 @@ export const useSettingsStore = defineStore("settings", () => {
     startDateTime,
     endDateTime,
     selectedTimeSpan,
+    selectedCurrency,
     setMinDateTime,
     setMaxDateTime,
     setStartDateTime,
     setEndDateTime,
     setSelectedTimeSpan,
+    setSelectedCurrency,
     fillMinMaxDateTimeRange,
   };
 });

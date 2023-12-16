@@ -1,7 +1,12 @@
 <template>
   <div>
-    <div class="h-[520px] w-full">
-      <TotalHandleChart :chartData="chartData" />
+    <div class="h-[520px] w-full flex px-12">
+      <div class="w-2/3 h-[520px]">
+        <TotalHandleChart :chartData="chartData" />
+      </div>
+      <div class="w-1/3">
+        <TotalHandleTable />
+      </div>
     </div>
   </div>
 </template>
@@ -9,6 +14,7 @@
 <script setup lang="ts">
 import type { ChartData } from "chart.js";
 import TotalHandleChart from "../components/TotalHandleChart.vue";
+import TotalHandleTable from "../components/TotalHandleTable.vue";
 import { onMounted, ref, watch } from "vue";
 import { useSettingsStore } from "@/stores/settings";
 import { TimeSpanOptions } from "@/utils/types";
