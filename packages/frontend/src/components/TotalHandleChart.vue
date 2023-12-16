@@ -78,7 +78,7 @@ const options: ChartOptions<'line'> = {
   },
   elements: {
     line: {
-      tension: 0.4,
+      tension: 0.2,
     },
   },
   plugins: {

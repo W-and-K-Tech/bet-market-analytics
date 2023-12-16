@@ -7,10 +7,10 @@ import GlobalSettings from "@/components/GlobalSettings.vue";
 <template>
   <main>
     <GlobalSettings />
-    <div class="h-96">
+    <div class="h-[520px] w-full">
       <TotalHandleChart />
     </div>
-    <div>
+    <div class="mt-32">
       <Suspense>
         <DimensionalAnalyticsView />
       </Suspense>

@@ -65,7 +65,7 @@ watch(() => settingStore.maxDateTime, (value) => {
             <Dropdown v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
               placeholder="Select a Time Span" />
           </div>
-          <Button label="Submit" :onclick="handleTimeRangeChangeClick" />
+          <Button severity="info" label="Query" :onclick="handleTimeRangeChangeClick" />
         </div>
       </template>
     </Card>
