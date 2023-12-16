@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { TimeSpanOptions } from "@/utils/types";
 
 export const useSettingsStore = defineStore("settings", () => {
   const minDateTime = ref();
@@ -12,6 +13,10 @@ export const useSettingsStore = defineStore("settings", () => {
   const setStartDateTime = (date: Date) => (startDateTime.value = date);
   const setEndDateTime = (date: Date) => (endDateTime.value = date);
 
+  const selectedTimeSpan = ref(TimeSpanOptions.Hourly);
+  const setSelectedTimeSpan = (option: TimeSpanOptions) =>
+    (selectedTimeSpan.value = option);
+
   const fillMinMaxDateTimeRange = (startDateTime: Date, endDateTime: Date) => {
     setMinDateTime(startDateTime);
     setMaxDateTime(endDateTime);
@@ -22,10 +27,12 @@ export const useSettingsStore = defineStore("settings", () => {
     maxDateTime,
     startDateTime,
     endDateTime,
+    selectedTimeSpan,
     setMinDateTime,
     setMaxDateTime,
     setStartDateTime,
     setEndDateTime,
+    setSelectedTimeSpan,
     fillMinMaxDateTimeRange,
   };
 });

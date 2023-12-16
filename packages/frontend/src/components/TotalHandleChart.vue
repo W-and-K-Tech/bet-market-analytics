@@ -25,6 +25,7 @@ import 'chartjs-adapter-date-fns';
 import { useSettingsStore } from '@/stores/settings';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { TimeSpanOptions } from '@/utils/types';
 dayjs.extend(utc)
 
 const settingStore = useSettingsStore();
@@ -41,11 +42,11 @@ ChartJS.register(
 )
 
 const loadData = async ({
-  groupBy = 'hour',
+  groupBy = TimeSpanOptions.Hourly,
   betType,
   startDateTime,
   endDateTime,
-}: { groupBy: 'hour' | 'minute', betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date }) => {
+}: { groupBy: TimeSpanOptions, betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date }) => {
   try {
     const url = new URL("http://localhost:3000/api/analytics/total-handle");
     url.searchParams.append('groupBy', groupBy);
@@ -77,7 +78,7 @@ const options: ChartOptions<'line'> = {
     x: {
       type: 'time',
       time: {
-        unit: 'hour',
+        unit: TimeSpanOptions.Hourly,
       },
       ticks: {
         callback: (value, index, ticks) => {
@@ -105,12 +106,12 @@ const options: ChartOptions<'line'> = {
 const chartData = ref<ChartData | null>(null);
 
 const fetchChartData = async ({
-  groupBy = 'hour',
+  groupBy = TimeSpanOptions.Hourly,
   betType,
   startDateTime,
   endDateTime,
 }: {
-  groupBy?: 'hour' | 'minute', betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date
+  groupBy?: TimeSpanOptions, betType?: 'single' | 'multi', startDateTime?: Date, endDateTime?: Date
 }) => {
   const totalHandleByHour = await loadData({ groupBy, betType, startDateTime, endDateTime });
   const totalSingleBetByHour = await loadData({ groupBy, betType: 'single', startDateTime, endDateTime });
@@ -167,17 +168,16 @@ const fetchChartData = async ({
   return [dayjs.utc(totalHandleByHour[0].bet_time), dayjs.utc(totalHandleByHour[totalHandleByHour.length - 1].bet_time)];
 }
 
-watch(() => [settingStore.startDateTime, settingStore.endDateTime], () => {
-  console.log('settingStore changed')
+watch(() => [settingStore.startDateTime, settingStore.endDateTime, settingStore.selectedTimeSpan], () => {
   fetchChartData({
-    groupBy: 'minute',
+    groupBy: settingStore.selectedTimeSpan,
     startDateTime: settingStore.startDateTime,
     endDateTime: settingStore.endDateTime,
   });
 });
 
 onMounted(async () => {
-  const [startDateTime, endDateTime] = await fetchChartData({ groupBy: 'minute' })
+  const [startDateTime, endDateTime] = await fetchChartData({ groupBy: settingStore.selectedTimeSpan })
   settingStore.fillMinMaxDateTimeRange(startDateTime.toDate(), endDateTime.toDate());
 });
 </script>
