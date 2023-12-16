@@ -81,11 +81,8 @@ const options: ChartOptions<'line'> = {
     },
     zoom: {
       zoom: {
-        wheel: {
+        drag: {
           enabled: true,
-        },
-        pinch: {
-          enabled: true
         },
         mode: 'x',
       },
