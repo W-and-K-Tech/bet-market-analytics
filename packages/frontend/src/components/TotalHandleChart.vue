@@ -118,7 +118,7 @@ const fetchChartData = async ({
   const totalTimeDividends = totalHandleByHour.map(item => item.bet_time);
 
   chartData.value = {
-    labels: totalTimeDividends,
+    labels: totalTimeDividends.map(item => dayjs.utc(item).toDate()),
     datasets: [
       {
         label: `Total Handle`,
