@@ -2,18 +2,8 @@
   <div>
     <div class="h-[520px] w-full flex px-12">
       <div class="w-2/3 h-[520px]">
-        <div class="flex items-center gap-8 mb-4">
-          <div class="flex items-center gap-4">
-            <label for="time-span" class="font-semibold block text-xl"> Time Span </label>
-            <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
-              placeholder="Select a Time Span" />
-          </div>
-          <div>
-            <Button outlined severity="danger" label="reset"
-              :onclick="() => $totalHandleChart?.$refs['chartRef']?.chart.resetZoom()" />
-          </div>
-        </div>
-        <TotalHandleChart ref="$totalHandleChart" :chartData="chartData" />
+        <TotalHandleChart :chartData="chartData" :selectedTimeSpan="settingsStore.selectedTimeSpan"
+          @onChangeTimeSpan="(value: TimeSpanOptions) => settingsStore.setSelectedTimeSpan(value)" />
       </div>
       <div class="w-1/3">
         <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
@@ -25,24 +15,14 @@
 
 <script setup lang="ts">
 import type { ChartData } from "chart.js";
-import Button from 'primevue/button';
 import TotalHandleChart from "../components/TotalHandleChart.vue";
 import TotalHandleTable from "../components/TotalHandleTable.vue";
-import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
-import Dropdown from 'primevue/dropdown';
+import { computed, onMounted, ref, watch } from "vue";
 import { useSettingsStore } from "@/stores/settings";
 import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
-
-const $totalHandleChart = ref<InstanceType<typeof TotalHandleChart> | null>(null);
-
-const timeSpans = ref([
-  { name: 'Every Minute', value: TimeSpanOptions.Minutely },
-  { name: 'Hourly', value: TimeSpanOptions.Hourly },
-]);
-const selectedTimeSpan = ref(timeSpans.value[1]);
 
 const chartData = ref<ChartData | null>(null);
 const settingsStore = useSettingsStore();
@@ -56,7 +36,6 @@ const totalMultiBet = computed(() => {
   if (chartData.value === null) return 0;
   return chartData.value.datasets?.[1].data.reduce((acc, item) => acc + item, 0) ?? 0;
 });
-
 
 const totalSingleBet = computed(() => {
   if (chartData.value === null) return 0;
@@ -174,14 +153,6 @@ watch(() => [
     currency: settingsStore.selectedCurrency,
   });
 });
-
-watch(() => selectedTimeSpan.value, (value) => {
-  settingsStore.setSelectedTimeSpan(value.value);
-});
-
-onBeforeMount(() => {
-  selectedTimeSpan.value = timeSpans.value.find((timeSpan) => timeSpan.value === settingsStore.selectedTimeSpan) ?? timeSpans.value[1];
-})
 
 onMounted(async () => {
   const [startDateTime, endDateTime] = await fetchChartData({ groupBy: settingsStore.selectedTimeSpan, currency: settingsStore.selectedCurrency })

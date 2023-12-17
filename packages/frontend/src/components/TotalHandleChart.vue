@@ -1,4 +1,15 @@
 <template>
+  <div class="flex items-center gap-8 mb-4">
+    <div class="flex items-center gap-4">
+      <label for="time-span" class="font-semibold block text-xl"> Time Span </label>
+      <Dropdown id="time-span" :options="timeSpans" optionLabel="name" placeholder="Select a Time Span"
+        @change="({ value }) => emit('onChangeTimeSpan', value.value as TimeSpanOptions)"
+        v-model="currentSelectedOptionsItem" />
+    </div>
+    <div>
+      <Button outlined severity="danger" label="reset" :onclick="() => chartRef?.chart.resetZoom()" />
+    </div>
+  </div>
   <Line ref="chartRef" v-if="chartData" :data="chartData" :options="options" />
 </template>
 
@@ -18,6 +29,8 @@ import {
   type ChartData,
 } from 'chart.js';
 import { Line } from 'vue-chartjs'
+import Dropdown from 'primevue/dropdown';
+import Button from 'primevue/button';
 import numeral from 'numeral';
 import { format, startOfDay, isEqual } from 'date-fns';
 import 'chartjs-adapter-date-fns';
@@ -38,7 +51,15 @@ ChartJS.register(
   Filler,
 )
 
-const { chartData } = defineProps<{ chartData: ChartData | null }>();
+const timeSpans = [
+  { name: 'Every Minute', value: TimeSpanOptions.Minutely },
+  { name: 'Hourly', value: TimeSpanOptions.Hourly },
+];
+
+const { chartData, selectedTimeSpan } = defineProps<{ chartData: ChartData | null, selectedTimeSpan: TimeSpanOptions }>();
+const emit = defineEmits(['onChangeTimeSpan']);
+
+const currentSelectedOptionsItem = ref(timeSpans.find((item) => item.value === selectedTimeSpan));
 
 const chartRef = ref<ChartJS | null>(null);
 
@@ -67,6 +88,9 @@ const options: ChartOptions<'line'> = {
     zoom: {
       zoom: {
         drag: {
+          enabled: true,
+        },
+        wheel: {
           enabled: true,
         },
         mode: 'x',
