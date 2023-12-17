@@ -1,5 +1,4 @@
 <template>
-  <Button text severity="info" label="reset" :onclick="() => chartRef?.chart.resetZoom()" />
   <Line ref="chartRef" v-if="chartData" :data="chartData" :options="options" />
 </template>
 
@@ -24,7 +23,6 @@ import { format, startOfDay, isEqual } from 'date-fns';
 import 'chartjs-adapter-date-fns';
 import { TimeSpanOptions } from '@/utils/types';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import Button from 'primevue/button';
 import { ref } from 'vue';
 
 ChartJS.register(

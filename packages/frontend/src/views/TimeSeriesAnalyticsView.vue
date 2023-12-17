@@ -2,14 +2,20 @@
   <div>
     <div class="h-[520px] w-full flex px-12">
       <div class="w-2/3 h-[520px]">
-        <TotalHandleChart :chartData="chartData" />
+        <div class="flex items-center gap-8 mb-4">
+          <div class="flex items-center gap-4">
+            <label for="time-span" class="font-semibold block text-xl"> Time Span </label>
+            <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
+              placeholder="Select a Time Span" />
+          </div>
+          <div>
+            <Button outlined severity="danger" label="reset"
+              :onclick="() => $totalHandleChart?.$refs['chartRef']?.chart.resetZoom()" />
+          </div>
+        </div>
+        <TotalHandleChart ref="$totalHandleChart" :chartData="chartData" />
       </div>
       <div class="w-1/3">
-        <div>
-          <label for="time-span" class="font-bold block mb-2"> Time Span </label>
-          <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
-            placeholder="Select a Time Span" />
-        </div>
         <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
           :currencySign="settingsStore.selectedCurrencySign" />
       </div>
@@ -19,6 +25,7 @@
 
 <script setup lang="ts">
 import type { ChartData } from "chart.js";
+import Button from 'primevue/button';
 import TotalHandleChart from "../components/TotalHandleChart.vue";
 import TotalHandleTable from "../components/TotalHandleTable.vue";
 import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
@@ -28,6 +35,8 @@ import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
+
+const $totalHandleChart = ref<InstanceType<typeof TotalHandleChart> | null>(null);
 
 const timeSpans = ref([
   { name: 'Every Minute', value: TimeSpanOptions.Minutely },
