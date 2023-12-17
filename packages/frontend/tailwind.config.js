@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      minHeight: {
+        "full-height": "calc(100vh - 48px)",
+      },
       // https://tailwind.primevue.org/installation
       colors: {
         "primary-50": "rgb(var(--primary-50))",

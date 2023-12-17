@@ -44,7 +44,7 @@ watch(() => settingsStore.maxDateTime, (value) => {
 
 <template>
   <div v-if="settingsStore.minDateTime && settingsStore.maxDateTime">
-    <div class="flex flex-wrap gap-3">
+    <div class="flex flex-col flex-wrap gap-8">
       <div>
         <label for="start-date-time" class="font-bold block mb-2"> Start Date Time </label>
         <Calendar id="start-date-time" :minDate="settingsStore.minDateTime" :maxDate="settingsStore.maxDateTime"
