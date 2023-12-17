@@ -1,5 +1,5 @@
 <template>
-  <Button text label="reset" :onclick="() => chartRef?.chart.resetZoom()" />
+  <Button text severity="info" label="reset" :onclick="() => chartRef?.chart.resetZoom()" />
   <Line ref="chartRef" v-if="chartData" :data="chartData" :options="options" />
 </template>
 

@@ -5,6 +5,9 @@
         <TotalHandleChart :chartData="chartData" />
       </div>
       <div class="w-1/3">
+        <h3 class="text-xl font-semibold">Report Range</h3>
+        <div class="text-sm mb-8">{{ settingStore.startDateTime?.toLocaleString() }} - {{
+          settingStore.endDateTime?.toLocaleString() }}</div>
         <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
           :currencySign="settingStore.selectedCurrencySign" />
       </div>
@@ -31,12 +34,13 @@ const totalHandle = computed(() => {
   return chartData.value.datasets?.[2].data.reduce((acc, item) => acc + item, 0) ?? 0;
 });
 
-const totalSingleBet = computed(() => {
+const totalMultiBet = computed(() => {
   if (chartData.value === null) return 0;
   return chartData.value.datasets?.[1].data.reduce((acc, item) => acc + item, 0) ?? 0;
 });
 
-const totalMultiBet = computed(() => {
+
+const totalSingleBet = computed(() => {
   if (chartData.value === null) return 0;
   return chartData.value.datasets?.[0].data.reduce((acc, item) => acc + item, 0) ?? 0;
 });

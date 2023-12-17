@@ -25,8 +25,8 @@ const formattedTotalSingleBet = computed(() => `${currencySign.value}${numeral(t
 const formattedTotalMultiBet = computed(() => `${currencySign.value}${numeral(totalMultiBet.value).format("0,0.00")}`);
 
 const bets = ref([
-  { type: 'Total Handle', total: formattedTotalMultiBet },
-  { type: 'Total Single Bet', total: formattedTotalHandle },
-  { type: 'Total Multi Bet', total: formattedTotalSingleBet },
+  { type: 'Total Handle', total: formattedTotalHandle },
+  { type: 'Total Single Bet', total: formattedTotalSingleBet },
+  { type: 'Total Multi Bet', total: formattedTotalMultiBet },
 ]);
 </script>

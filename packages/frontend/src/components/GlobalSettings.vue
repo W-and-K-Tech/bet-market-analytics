@@ -54,10 +54,6 @@ watch(() => settingStore.maxDateTime, (value) => {
 <template>
   <div v-if="settingStore.minDateTime && settingStore.maxDateTime">
     <Card>
-      <template #title>
-        Report Range: {{ startDateTime.toLocaleString() }} - {{ endDateTime.toLocaleString() }}
-      </template>
-
       <template #content>
         <div class="flex flex-wrap gap-3">
           <div>
