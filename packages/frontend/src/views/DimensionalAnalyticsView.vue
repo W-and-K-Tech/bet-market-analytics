@@ -113,8 +113,7 @@ async function fetchData({ groupType, startDateTime, endDateTime }: { groupType:
 
 <template>
   <div>
-    <h2 class="text-2xl">Total Handle Performance</h2>
-    <div class="flex items-center gap-12">
+    <div class="flex items-center gap-12 mb-8">
       <h3 class="text-lg">Market</h3>
       <div class="flex gap-4">
         <Button :key="group" v-for="group in groups" severity="info" :outlined="settingsStore.currentGroup !== group"
