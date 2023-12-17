@@ -5,7 +5,8 @@
         <TotalHandleChart :chartData="chartData" />
       </div>
       <div class="w-1/3">
-        <TotalHandleTable />
+        <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
+          :currencySign="settingStore.selectedCurrencySign" />
       </div>
     </div>
   </div>
@@ -15,7 +16,7 @@
 import type { ChartData } from "chart.js";
 import TotalHandleChart from "../components/TotalHandleChart.vue";
 import TotalHandleTable from "../components/TotalHandleTable.vue";
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useSettingsStore } from "@/stores/settings";
 import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
@@ -24,6 +25,21 @@ dayjs.extend(utc);
 
 const chartData = ref<ChartData | null>(null);
 const settingStore = useSettingsStore();
+
+const totalHandle = computed(() => {
+  if (chartData.value === null) return 0;
+  return chartData.value.datasets?.[2].data.reduce((acc, item) => acc + item, 0) ?? 0;
+});
+
+const totalSingleBet = computed(() => {
+  if (chartData.value === null) return 0;
+  return chartData.value.datasets?.[1].data.reduce((acc, item) => acc + item, 0) ?? 0;
+});
+
+const totalMultiBet = computed(() => {
+  if (chartData.value === null) return 0;
+  return chartData.value.datasets?.[0].data.reduce((acc, item) => acc + item, 0) ?? 0;
+});
 
 interface RequestType {
   groupBy?: TimeSpanOptions,

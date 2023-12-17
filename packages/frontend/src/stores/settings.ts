@@ -1,6 +1,6 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { CurrencyType, TimeSpanOptions } from "@/utils/types";
+import { CurrencyType, TimeSpanOptions, currencySignMap } from "@/utils/types";
 
 export const useSettingsStore = defineStore("settings", () => {
   const minDateTime = ref();
@@ -18,6 +18,9 @@ export const useSettingsStore = defineStore("settings", () => {
     (selectedTimeSpan.value = option);
 
   const selectedCurrency = ref(CurrencyType.USD);
+  const selectedCurrencySign = computed(
+    () => currencySignMap[selectedCurrency.value]
+  );
   const setSelectedCurrency = (currency: CurrencyType) =>
     (selectedCurrency.value = currency);
 
@@ -33,6 +36,7 @@ export const useSettingsStore = defineStore("settings", () => {
     endDateTime,
     selectedTimeSpan,
     selectedCurrency,
+    selectedCurrencySign,
     setMinDateTime,
     setMaxDateTime,
     setStartDateTime,

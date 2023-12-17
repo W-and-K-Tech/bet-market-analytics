@@ -7,6 +7,13 @@ export enum CurrencyType {
   CAD = "cad",
 }
 
+export const currencySignMap = {
+  [CurrencyType.USD]: "$",
+  [CurrencyType.EUR]: "€",
+  [CurrencyType.AUSD]: "A$",
+  [CurrencyType.CAD]: "C$",
+};
+
 export enum TimeSpanOptions {
   Hourly = "hour",
   Minutely = "minute",

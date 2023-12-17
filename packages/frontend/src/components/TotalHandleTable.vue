@@ -8,6 +8,25 @@
 <script lang="ts" setup>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import { computed, ref, toRefs } from 'vue';
+import numeral from 'numeral';
 
-const bets = [{ type: 'single', total: 1000 }]
+const props = defineProps<{
+  totalHandle: number;
+  totalSingleBet: number;
+  totalMultiBet: number;
+  currencySign: string;
+}>();
+
+const { totalHandle, totalSingleBet, totalMultiBet, currencySign } = toRefs(props);
+
+const formattedTotalHandle = computed(() => `${currencySign.value}${numeral(totalHandle.value).format("0,0.00")}`);
+const formattedTotalSingleBet = computed(() => `${currencySign.value}${numeral(totalSingleBet.value).format("0,0.00")}`);
+const formattedTotalMultiBet = computed(() => `${currencySign.value}${numeral(totalMultiBet.value).format("0,0.00")}`);
+
+const bets = ref([
+  { type: 'Total Handle', total: formattedTotalMultiBet },
+  { type: 'Total Single Bet', total: formattedTotalHandle },
+  { type: 'Total Multi Bet', total: formattedTotalSingleBet },
+]);
 </script>
