@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="h-[520px] w-full flex px-12">
+    <div class="h-[520px] w-full flex">
       <div class="w-2/3 h-[520px]">
         <TotalHandleChart :chartData="chartData" :selectedTimeSpan="settingsStore.selectedTimeSpan"
           @onChangeTimeSpan="(value: TimeSpanOptions) => settingsStore.setSelectedTimeSpan(value)" />
