@@ -16,12 +16,18 @@ const connectionSettings = {
   database: process.env.DB_DATABASE,
 };
 
-const generateHandleGroupByQuery = (groupBy) => `
-SELECT ${groupBy}, SUM(book_risk) as total_handle
-FROM bet_transactions
-GROUP BY ${groupBy}
-ORDER BY total_handle DESC
-`;
+const generateHandleGroupByQuery = (groupByFields) => {
+  // Join the array of fields into a comma-separated string
+  const groupByString = groupByFields.join(", ");
+
+  // Construct the SQL query using the groupByString
+  return `
+    SELECT ${groupByString}, SUM(book_risk) as total_handle
+    FROM bet_transactions
+    GROUP BY ${groupByString}
+    ORDER BY total_handle DESC
+  `;
+};
 
 const runQuery = async (query) => {
   const connection = await mysql.createConnection(connectionSettings);
@@ -37,7 +43,7 @@ router.get("/handle_by_stat_type", async (req, res) => {
     res.json(cachedData);
   } else {
     try {
-      const rows = await runQuery(generateHandleGroupByQuery("stat_type"));
+      const rows = await runQuery(generateHandleGroupByQuery(["stat_type"]));
 
       analyticsCache.set(key, rows);
 
@@ -56,7 +62,9 @@ router.get("/handle_by_player_name", async (req, res) => {
     res.json(cachedData);
   } else {
     try {
-      const rows = await runQuery(generateHandleGroupByQuery("player_name"));
+      const rows = await runQuery(
+        generateHandleGroupByQuery(["player_name", "team_abbr"])
+      );
 
       analyticsCache.set(key, rows);
 
@@ -75,7 +83,7 @@ router.get("/handle_by_team_abbr", async (req, res) => {
     res.json(cachedData);
   } else {
     try {
-      const rows = await runQuery(generateHandleGroupByQuery("team_abbr"));
+      const rows = await runQuery(generateHandleGroupByQuery(["team_abbr"]));
 
       analyticsCache.set(key, rows);
 
