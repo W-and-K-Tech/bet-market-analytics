@@ -5,8 +5,13 @@
         <TotalHandleChart :chartData="chartData" />
       </div>
       <div class="w-1/3">
+        <div>
+          <label for="time-span" class="font-bold block mb-2"> Time Span </label>
+          <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
+            placeholder="Select a Time Span" />
+        </div>
         <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
-          :currencySign="settingStore.selectedCurrencySign" />
+          :currencySign="settingsStore.selectedCurrencySign" />
       </div>
     </div>
   </div>
@@ -16,15 +21,22 @@
 import type { ChartData } from "chart.js";
 import TotalHandleChart from "../components/TotalHandleChart.vue";
 import TotalHandleTable from "../components/TotalHandleTable.vue";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onBeforeMount, onMounted, ref, watch } from "vue";
+import Dropdown from 'primevue/dropdown';
 import { useSettingsStore } from "@/stores/settings";
 import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 
+const timeSpans = ref([
+  { name: 'Every Minute', value: TimeSpanOptions.Minutely },
+  { name: 'Hourly', value: TimeSpanOptions.Hourly },
+]);
+const selectedTimeSpan = ref(timeSpans.value[1]);
+
 const chartData = ref<ChartData | null>(null);
-const settingStore = useSettingsStore();
+const settingsStore = useSettingsStore();
 
 const totalHandle = computed(() => {
   if (chartData.value === null) return 0;
@@ -141,21 +153,29 @@ const fetchChartData = async ({
 }
 
 watch(() => [
-  settingStore.startDateTime,
-  settingStore.endDateTime,
-  settingStore.selectedTimeSpan,
-  settingStore.selectedCurrency
+  settingsStore.startDateTime,
+  settingsStore.endDateTime,
+  settingsStore.selectedTimeSpan,
+  settingsStore.selectedCurrency
 ], () => {
   fetchChartData({
-    groupBy: settingStore.selectedTimeSpan,
-    startDateTime: settingStore.startDateTime,
-    endDateTime: settingStore.endDateTime,
-    currency: settingStore.selectedCurrency,
+    groupBy: settingsStore.selectedTimeSpan,
+    startDateTime: settingsStore.startDateTime,
+    endDateTime: settingsStore.endDateTime,
+    currency: settingsStore.selectedCurrency,
   });
 });
 
+watch(() => selectedTimeSpan.value, (value) => {
+  settingsStore.setSelectedTimeSpan(value.value);
+});
+
+onBeforeMount(() => {
+  selectedTimeSpan.value = timeSpans.value.find((timeSpan) => timeSpan.value === settingsStore.selectedTimeSpan) ?? timeSpans.value[1];
+})
+
 onMounted(async () => {
-  const [startDateTime, endDateTime] = await fetchChartData({ groupBy: settingStore.selectedTimeSpan, currency: settingStore.selectedCurrency })
-  settingStore.fillMinMaxDateTimeRange(startDateTime.toDate(), endDateTime.toDate());
+  const [startDateTime, endDateTime] = await fetchChartData({ groupBy: settingsStore.selectedTimeSpan, currency: settingsStore.selectedCurrency })
+  settingsStore.fillMinMaxDateTimeRange(startDateTime.toDate(), endDateTime.toDate());
 });
 </script>

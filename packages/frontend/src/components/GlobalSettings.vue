@@ -3,20 +3,13 @@ import Calendar from 'primevue/calendar';
 import { useSettingsStore } from "@/stores/settings";
 import { onBeforeMount, ref, watch } from 'vue';
 import Button from 'primevue/button';
-import Card from 'primevue/card';
 import Dropdown from 'primevue/dropdown';
-import { CurrencyType, TimeSpanOptions } from '@/utils/types';
+import { CurrencyType } from '@/utils/types';
 
-const settingStore = useSettingsStore();
+const settingsStore = useSettingsStore();
 
 const startDateTime = ref();
 const endDateTime = ref();
-
-const timeSpans = ref([
-  { name: 'Every Minute', value: TimeSpanOptions.Minutely },
-  { name: 'Hourly', value: TimeSpanOptions.Hourly },
-]);
-const selectedTimeSpan = ref(timeSpans.value[1]);
 
 const curriencies = ref([
   { name: 'USD', value: CurrencyType.USD },
@@ -27,47 +20,40 @@ const curriencies = ref([
 const selectedCurrency = ref(curriencies.value[0]);
 
 const handleTimeRangeChangeClick = () => {
-  settingStore.setStartDateTime(startDateTime.value);
-  settingStore.setEndDateTime(endDateTime.value);
-  settingStore.setSelectedTimeSpan(selectedTimeSpan.value.value);
-  settingStore.setSelectedCurrency(selectedCurrency.value.value);
+  settingsStore.setStartDateTime(startDateTime.value);
+  settingsStore.setEndDateTime(endDateTime.value);
+  settingsStore.setSelectedCurrency(selectedCurrency.value.value);
 }
 
 onBeforeMount(() => {
-  startDateTime.value = settingStore.minDateTime;
-  endDateTime.value = settingStore.maxDateTime;
-  selectedTimeSpan.value = timeSpans.value.find((timeSpan) => timeSpan.value === settingStore.selectedTimeSpan) ?? timeSpans.value[1];
-  selectedCurrency.value = curriencies.value.find((currency) => currency.value === settingStore.selectedCurrency) ?? curriencies.value[0];
+  startDateTime.value = settingsStore.minDateTime;
+  endDateTime.value = settingsStore.maxDateTime;
+  selectedCurrency.value = curriencies.value.find((currency) => currency.value === settingsStore.selectedCurrency) ?? curriencies.value[0];
 })
 
-watch(() => settingStore.minDateTime, (value) => {
+watch(() => settingsStore.minDateTime, (value) => {
   startDateTime.value = value;
-  settingStore.setStartDateTime(value);
+  settingsStore.setStartDateTime(value);
 });
 
-watch(() => settingStore.maxDateTime, (value) => {
+watch(() => settingsStore.maxDateTime, (value) => {
   endDateTime.value = value;
-  settingStore.setEndDateTime(value);
+  settingsStore.setEndDateTime(value);
 });
 </script>
 
 <template>
-  <div v-if="settingStore.minDateTime && settingStore.maxDateTime">
+  <div v-if="settingsStore.minDateTime && settingsStore.maxDateTime">
     <div class="flex flex-wrap gap-3">
       <div>
         <label for="start-date-time" class="font-bold block mb-2"> Start Date Time </label>
-        <Calendar id="start-date-time" :minDate="settingStore.minDateTime" :maxDate="settingStore.maxDateTime"
+        <Calendar id="start-date-time" :minDate="settingsStore.minDateTime" :maxDate="settingsStore.maxDateTime"
           v-model="startDateTime" showTime hourFormat="12" />
       </div>
       <div>
         <label for="end-date-time" class="font-bold block mb-2"> End Date Time </label>
-        <Calendar id="end-date-time" :minDate="startDateTime" :maxDate="settingStore.maxDateTime" v-model="endDateTime"
+        <Calendar id="end-date-time" :minDate="startDateTime" :maxDate="settingsStore.maxDateTime" v-model="endDateTime"
           showTime hourFormat="12" />
-      </div>
-      <div>
-        <label for="time-span" class="font-bold block mb-2"> Time Span </label>
-        <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
-          placeholder="Select a Time Span" />
       </div>
       <div>
         <label for="currencies" class="font-bold block mb-2"> Currency </label>
