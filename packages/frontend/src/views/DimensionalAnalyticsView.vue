@@ -7,6 +7,7 @@ import type { ChartData } from "chart.js";
 import { computed, onMounted, reactive, watch } from "vue";
 import Button from 'primevue/button';
 import { useSettingsStore } from "@/stores/settings";
+import dayjs from "dayjs";
 
 const colorSet: { [key in GroupType]: any[] } = {
   'stat_type': generateColors(50),
@@ -69,33 +70,40 @@ const pieChartData = computed<ChartData | null>(() => {
 
 const handleClickMarketType = async (group: GroupType) => {
   settingsStore.setCurrentGroup(group);
-  if (totalHandleDataByGroup[group] === null) {
-    totalHandleDataByGroup[group] = await fetchData({ groupType: group });
-  }
 }
 
 onMounted(async () => {
-  totalHandleDataByGroup['stat_type'] = await fetchData({ groupType: 'stat_type' });
+  totalHandleDataByGroup['stat_type'] = await fetchData({
+    groupType: 'stat_type',
+    startDateTime: settingsStore.startDateTime,
+    endDateTime: settingsStore.endDateTime,
+  });
 });
 
 watch(() => [
   settingsStore.startDateTime,
   settingsStore.endDateTime,
   settingsStore.selectedTimeSpan,
-  settingsStore.selectedCurrency
-], () => {
-  // fetchData({
-  // groupBy: settingsStore.selectedTimeSpan,
-  // startDateTime: settingsStore.startDateTime,
-  // endDateTime: settingsStore.endDateTime,
-  // currency: settingsStore.selectedCurrency,
-  // });
+  settingsStore.selectedCurrency,
+  settingsStore.currentGroup,
+], async () => {
+  totalHandleDataByGroup[settingsStore.currentGroup] = await fetchData({
+    groupType: settingsStore.currentGroup,
+    startDateTime: settingsStore.startDateTime,
+    endDateTime: settingsStore.endDateTime,
+  });
 });
 
-async function fetchData({ groupType }: { groupType: GroupType }) {
+async function fetchData({ groupType, startDateTime, endDateTime }: { groupType: GroupType, startDateTime?: Date, endDateTime?: Date }) {
   try {
-    const response = await fetch(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
-    return response.json();
+
+    const url = new URL(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
+    if (startDateTime) url.searchParams.append('startDateTime', dayjs(startDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
+    if (endDateTime) url.searchParams.append('endDateTime', dayjs(endDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
+
+    const response = await fetch(url.href);
+    const data = await response.json();
+    return data.filter((item: any) => item.currency === settingsStore.selectedCurrency);
   } catch (error) {
     console.error('Error fetching data:', error);
     return null;

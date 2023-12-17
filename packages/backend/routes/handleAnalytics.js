@@ -16,14 +16,21 @@ const connectionSettings = {
   database: process.env.DB_DATABASE,
 };
 
-const generateHandleGroupByQuery = (groupByFields) => {
-  // Join the array of fields into a comma-separated string
-  const groupByString = groupByFields.join(", ");
+const generateHandleGroupByQuery = (groupByFields, options = {}) => {
+  const groupByString = [...groupByFields, ...["currency"]].join(", ");
+  const { startDateTime, endDateTime } = options;
 
-  // Construct the SQL query using the groupByString
+  let whereClause = "";
+  if (startDateTime && endDateTime) {
+    const decodedStartDateTime = decodeURIComponent(startDateTime);
+    const decodedEndDateTime = decodeURIComponent(endDateTime);
+    whereClause = `WHERE accepted_datetime_utc BETWEEN '${decodedStartDateTime}' AND '${decodedEndDateTime}' `;
+  }
+
   return `
     SELECT ${groupByString}, SUM(book_risk) as total_handle
     FROM bet_transactions
+    ${whereClause}
     GROUP BY ${groupByString}
     ORDER BY total_handle DESC
   `;
@@ -37,13 +44,18 @@ const runQuery = async (query) => {
 };
 
 router.get("/handle_by_stat_type", async (req, res) => {
-  const key = `handle_by_stat_type`;
+  const startDateTime = req.query.startDateTime;
+  const endDateTime = req.query.endDateTime;
+  const key = `handle_by_stat_type_${startDateTime}_${endDateTime}`;
   const cachedData = analyticsCache.get(key);
   if (cachedData) {
     res.json(cachedData);
   } else {
     try {
-      const rows = await runQuery(generateHandleGroupByQuery(["stat_type"]));
+      const rows = await runQuery(generateHandleGroupByQuery(["stat_type"]), {
+        startDateTime,
+        endDateTime,
+      });
 
       analyticsCache.set(key, rows);
 
@@ -56,14 +68,19 @@ router.get("/handle_by_stat_type", async (req, res) => {
 });
 
 router.get("/handle_by_player_name", async (req, res) => {
-  const key = `handle_by_player_name`;
+  const startDateTime = req.query.startDateTime;
+  const endDateTime = req.query.endDateTime;
+  const key = `handle_by_player_name_${startDateTime}_${endDateTime}`;
   const cachedData = analyticsCache.get(key);
   if (cachedData) {
     res.json(cachedData);
   } else {
     try {
       const rows = await runQuery(
-        generateHandleGroupByQuery(["player_name", "team_abbr"])
+        generateHandleGroupByQuery(["player_name", "team_abbr"], {
+          startDateTime,
+          endDateTime,
+        })
       );
 
       analyticsCache.set(key, rows);
@@ -77,13 +94,18 @@ router.get("/handle_by_player_name", async (req, res) => {
 });
 
 router.get("/handle_by_team_abbr", async (req, res) => {
-  const key = `handle_by_team_abbr`;
+  const startDateTime = req.query.startDateTime;
+  const endDateTime = req.query.endDateTime;
+  const key = `handle_by_team_abbr_${startDateTime}_${endDateTime}`;
   const cachedData = analyticsCache.get(key);
   if (cachedData) {
     res.json(cachedData);
   } else {
     try {
-      const rows = await runQuery(generateHandleGroupByQuery(["team_abbr"]));
+      const rows = await runQuery(generateHandleGroupByQuery(["team_abbr"]), {
+        startDateTime,
+        endDateTime,
+      });
 
       analyticsCache.set(key, rows);
 
