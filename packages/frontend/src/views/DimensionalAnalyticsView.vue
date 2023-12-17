@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import HandleGroupByBarChart from "@/components/HandleGroupByBarChart.vue";
 import HandleGroupByPieChart from "@/components/HandleGroupByPieChart.vue";
-import { type GroupType } from '@/utils/types';
+import { groupTitleMap, type GroupType } from '@/utils/types';
 import { generateColors } from '@/utils/index';
 import type { ChartData } from "chart.js";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, watch } from "vue";
 import Button from 'primevue/button';
+import { useSettingsStore } from "@/stores/settings";
 
 const colorSet: { [key in GroupType]: any[] } = {
   'stat_type': generateColors(50),
@@ -13,37 +14,31 @@ const colorSet: { [key in GroupType]: any[] } = {
   'team_abbr': generateColors(2),
 };
 
-const groupTitleMap: { [key in GroupType]: string } = {
-  'stat_type': 'Stat',
-  'player_name': 'Player',
-  'team_abbr': 'Team',
-}
-
 const totalHandleDataByGroup = reactive<{ [key in GroupType]: any[] | null }>({
   'stat_type': null,
   'player_name': null,
   'team_abbr': null,
 });
 
+const settingsStore = useSettingsStore();
+
 const groups = Object.keys(totalHandleDataByGroup) as GroupType[];
-const currentGroup = ref<GroupType>('stat_type');
-const currentGroupTitle = computed<string>(() => groupTitleMap[currentGroup.value]);
 
 const barChartData = computed<ChartData | null>(() => {
-  const data = totalHandleDataByGroup[currentGroup.value];
+  const data = totalHandleDataByGroup[settingsStore.currentGroup];
   if (data === null) return null;
   return {
-    labels: data.map((item: any) => item[currentGroup.value]).slice(0, 10),
+    labels: data.map((item: any) => item[settingsStore.currentGroup]).slice(0, 10),
     datasets: [{
       label: 'Total Bet Handle',
       data: data.map((item: any) => item.total_handle).slice(0, 10),
-      backgroundColor: colorSet[currentGroup.value],
+      backgroundColor: colorSet[settingsStore.currentGroup],
     }]
   }
 });
 
 const pieChartData = computed<ChartData | null>(() => {
-  const data = totalHandleDataByGroup[currentGroup.value];
+  const data = totalHandleDataByGroup[settingsStore.currentGroup];
   if (data === null) return null;
 
   // Sort data by total_handle in descending order
@@ -55,7 +50,7 @@ const pieChartData = computed<ChartData | null>(() => {
   // Add 'Other' category if there are more than 10 items
   if (data.length > 10) {
     topItems.push({
-      [currentGroup.value]: 'Other',
+      [settingsStore.currentGroup]: 'Other',
       total_handle: otherTotalHandle
     });
   }
@@ -63,27 +58,41 @@ const pieChartData = computed<ChartData | null>(() => {
   const totalHandle = data.reduce((acc: number, item: any) => acc + item.total_handle, 0);
 
   return {
-    labels: topItems.map((item: any) => item[currentGroup.value]),
+    labels: topItems.map((item: any) => item[settingsStore.currentGroup]),
     datasets: [{
       label: 'Percentage of Total Handle',
       data: topItems.map((item: any) => (item.total_handle / totalHandle) * 100),
-      backgroundColor: colorSet[currentGroup.value],
+      backgroundColor: colorSet[settingsStore.currentGroup],
     }]
   };
 });
 
 const handleClickMarketType = async (group: GroupType) => {
-  currentGroup.value = group;
+  settingsStore.setCurrentGroup(group);
   if (totalHandleDataByGroup[group] === null) {
-    totalHandleDataByGroup[group] = await fetchData(group);
+    totalHandleDataByGroup[group] = await fetchData({ groupType: group });
   }
 }
 
 onMounted(async () => {
-  totalHandleDataByGroup['stat_type'] = await fetchData('stat_type');
+  totalHandleDataByGroup['stat_type'] = await fetchData({ groupType: 'stat_type' });
 });
 
-async function fetchData(groupType: GroupType) {
+watch(() => [
+  settingsStore.startDateTime,
+  settingsStore.endDateTime,
+  settingsStore.selectedTimeSpan,
+  settingsStore.selectedCurrency
+], () => {
+  // fetchData({
+  // groupBy: settingsStore.selectedTimeSpan,
+  // startDateTime: settingsStore.startDateTime,
+  // endDateTime: settingsStore.endDateTime,
+  // currency: settingsStore.selectedCurrency,
+  // });
+});
+
+async function fetchData({ groupType }: { groupType: GroupType }) {
   try {
     const response = await fetch(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
     return response.json();
@@ -100,11 +109,11 @@ async function fetchData(groupType: GroupType) {
     <div class="flex items-center gap-12">
       <h3 class="text-lg">Market</h3>
       <div class="flex gap-4">
-        <Button :key="group" v-for="group in groups" severity="info" :outlined="currentGroup !== group"
+        <Button :key="group" v-for="group in groups" severity="info" :outlined="settingsStore.currentGroup !== group"
           :onclick="async () => handleClickMarketType(group)" :label="groupTitleMap[group]" />
       </div>
     </div>
-    <h3>{{ `TOP 10 ${currentGroupTitle} Betting Performance` }}</h3>
+    <h3>{{ `TOP 10 ${settingsStore.currentGroupTitle} Betting Performance` }}</h3>
   </div>
 
   <div class="flex">

@@ -18,3 +18,9 @@ export enum TimeSpanOptions {
   Hourly = "hour",
   Minutely = "minute",
 }
+
+export const groupTitleMap: { [key in GroupType]: string } = {
+  stat_type: "Stat",
+  player_name: "Player",
+  team_abbr: "Team",
+};

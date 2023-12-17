@@ -1,6 +1,12 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { CurrencyType, TimeSpanOptions, currencySignMap } from "@/utils/types";
+import {
+  CurrencyType,
+  TimeSpanOptions,
+  currencySignMap,
+  type GroupType,
+  groupTitleMap,
+} from "@/utils/types";
 
 export const useSettingsStore = defineStore("settings", () => {
   const minDateTime = ref();
@@ -24,6 +30,12 @@ export const useSettingsStore = defineStore("settings", () => {
   const setSelectedCurrency = (currency: CurrencyType) =>
     (selectedCurrency.value = currency);
 
+  const currentGroup = ref<GroupType>("stat_type");
+  const currentGroupTitle = computed<string>(
+    () => groupTitleMap[currentGroup.value]
+  );
+  const setCurrentGroup = (group: GroupType) => (currentGroup.value = group);
+
   const fillMinMaxDateTimeRange = (startDateTime: Date, endDateTime: Date) => {
     setMinDateTime(startDateTime);
     setMaxDateTime(endDateTime);
@@ -37,6 +49,9 @@ export const useSettingsStore = defineStore("settings", () => {
     selectedTimeSpan,
     selectedCurrency,
     selectedCurrencySign,
+    currentGroupTitle,
+    currentGroup,
+    setCurrentGroup,
     setMinDateTime,
     setMaxDateTime,
     setStartDateTime,
