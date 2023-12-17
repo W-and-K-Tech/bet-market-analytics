@@ -53,32 +53,28 @@ watch(() => settingStore.maxDateTime, (value) => {
 
 <template>
   <div v-if="settingStore.minDateTime && settingStore.maxDateTime">
-    <Card>
-      <template #content>
-        <div class="flex flex-wrap gap-3">
-          <div>
-            <label for="start-date-time" class="font-bold block mb-2"> Start Date Time </label>
-            <Calendar id="start-date-time" :minDate="settingStore.minDateTime" :maxDate="settingStore.maxDateTime"
-              v-model="startDateTime" showTime hourFormat="12" />
-          </div>
-          <div>
-            <label for="end-date-time" class="font-bold block mb-2"> End Date Time </label>
-            <Calendar id="end-date-time" :minDate="startDateTime" :maxDate="settingStore.maxDateTime"
-              v-model="endDateTime" showTime hourFormat="12" />
-          </div>
-          <div>
-            <label for="time-span" class="font-bold block mb-2"> Time Span </label>
-            <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
-              placeholder="Select a Time Span" />
-          </div>
-          <div>
-            <label for="currencies" class="font-bold block mb-2"> Currency </label>
-            <Dropdown id="currencies" v-model="selectedCurrency" :options="curriencies" optionLabel="name"
-              placeholder="Select Currency" />
-          </div>
-          <Button severity="info" label="Query" :onclick="handleTimeRangeChangeClick" />
-        </div>
-      </template>
-    </Card>
+    <div class="flex flex-wrap gap-3">
+      <div>
+        <label for="start-date-time" class="font-bold block mb-2"> Start Date Time </label>
+        <Calendar id="start-date-time" :minDate="settingStore.minDateTime" :maxDate="settingStore.maxDateTime"
+          v-model="startDateTime" showTime hourFormat="12" />
+      </div>
+      <div>
+        <label for="end-date-time" class="font-bold block mb-2"> End Date Time </label>
+        <Calendar id="end-date-time" :minDate="startDateTime" :maxDate="settingStore.maxDateTime" v-model="endDateTime"
+          showTime hourFormat="12" />
+      </div>
+      <div>
+        <label for="time-span" class="font-bold block mb-2"> Time Span </label>
+        <Dropdown id="time-span" v-model="selectedTimeSpan" :options="timeSpans" optionLabel="name"
+          placeholder="Select a Time Span" />
+      </div>
+      <div>
+        <label for="currencies" class="font-bold block mb-2"> Currency </label>
+        <Dropdown id="currencies" v-model="selectedCurrency" :options="curriencies" optionLabel="name"
+          placeholder="Select Currency" />
+      </div>
+      <Button severity="info" label="Query" :onclick="handleTimeRangeChangeClick" />
+    </div>
   </div>
 </template>

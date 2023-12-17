@@ -36,3 +36,7 @@
   --surface-900: 17 24 39;
   --surface-950: 8 8 8;
 }
+
+html {
+  line-height: 1;
+}

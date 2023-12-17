@@ -4,11 +4,22 @@ import TabPanel from 'primevue/tabpanel';
 import DimensionalAnalyticsView from "./DimensionalAnalyticsView.vue";
 import GlobalSettings from "@/components/GlobalSettings.vue";
 import TimeSeriesAnalyticsView from "./TimeSeriesAnalyticsView.vue";
+import { useSettingsStore } from '@/stores/settings';
+const settingStore = useSettingsStore();
 </script>
 
 <template>
   <main>
-    <GlobalSettings />
+    <div class="flex">
+      <div>
+        <h3 class="text-xl font-semibold">Report Range</h3>
+        <div class="text-sm mb-8">{{ settingStore.startDateTime?.toLocaleString() }} - {{
+          settingStore.endDateTime?.toLocaleString() }}</div>
+      </div>
+      <GlobalSettings />
+    </div>
+
+
     <TabView>
       <TabPanel>
         <template #header>
@@ -31,5 +42,4 @@ import TimeSeriesAnalyticsView from "./TimeSeriesAnalyticsView.vue";
         </Suspense>
       </TabPanel>
     </TabView>
-  </main>
-</template>
+</main></template>

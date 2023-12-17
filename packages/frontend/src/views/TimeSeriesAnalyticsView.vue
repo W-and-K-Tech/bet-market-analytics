@@ -5,9 +5,6 @@
         <TotalHandleChart :chartData="chartData" />
       </div>
       <div class="w-1/3">
-        <h3 class="text-xl font-semibold">Report Range</h3>
-        <div class="text-sm mb-8">{{ settingStore.startDateTime?.toLocaleString() }} - {{
-          settingStore.endDateTime?.toLocaleString() }}</div>
         <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
           :currencySign="settingStore.selectedCurrencySign" />
       </div>
