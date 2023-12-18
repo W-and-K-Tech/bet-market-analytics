@@ -44,7 +44,7 @@ watch(() => settingsStore.maxDateTime, (value) => {
 
 <template>
   <div v-if="settingsStore.minDateTime && settingsStore.maxDateTime">
-    <div class="flex flex-col flex-wrap gap-8">
+    <div class="flex flex-wrap gap-8">
       <div>
         <label for="start-date-time" class="font-semibold text-slate-500 block mb-2"><i class="pi pi-calendar-times"></i>
           Start Date Time </label>

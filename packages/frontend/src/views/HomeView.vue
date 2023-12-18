@@ -14,12 +14,12 @@ const settingStore = useSettingsStore();
 </script>
 
 <template>
-  <main class="flex min-h-full-height w-full">
-    <div class="w-72 shrink-0 bg-slate-50 p-8">
+  <main class="flex flex-col md:flex-row min-h-full-height w-full">
+    <div class="md:w-72 shrink-0 bg-slate-50 p-8">
       <GlobalSettings />
     </div>
 
-    <div class="grow p-8 shrink-0" style="width: calc(100vw - 18rem);">
+    <div class="grow p-8 shrink-0 md:w-dashboard-content-full">
       <GameInfo />
       <h3 class="mt-4 mb-2 text-sm text-slate-500 font-semibold">Report Range</h3>
       <div class="text-xl text-slate-800 mb-4">{{ dayjs(settingStore.startDateTime).format('lll') }} - {{

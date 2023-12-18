@@ -10,6 +10,9 @@ export default {
       minHeight: {
         "full-height": "calc(100vh - 48px)",
       },
+      width: {
+        "dashboard-content-full": "calc(100vw - 18rem)",
+      },
       // https://tailwind.primevue.org/installation
       colors: {
         "primary-50": "rgb(var(--primary-50))",

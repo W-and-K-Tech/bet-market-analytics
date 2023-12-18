@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="h-[520px] w-full flex">
-      <div class="w-2/3 h-[520px]">
+    <div class="w-full flex flex-col md:flex-row gap-16 md:gap-4">
+      <div class="md:w-2/3 h-[450px]">
         <TotalHandleChart :chartData="chartData" :selectedTimeSpan="settingsStore.selectedTimeSpan"
           @onChangeTimeSpan="(value: TimeSpanOptions) => settingsStore.setSelectedTimeSpan(value)" />
       </div>
-      <div class="w-1/3">
+      <div class="md:w-1/3">
         <TotalHandleTable :totalHandle="totalHandle" :totalSingleBet="totalSingleBet" :totalMultiBet="totalMultiBet"
           :currencySign="settingsStore.selectedCurrencySign" />
       </div>
