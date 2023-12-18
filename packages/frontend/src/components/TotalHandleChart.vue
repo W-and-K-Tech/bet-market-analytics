@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap items-center gap-8 mb-4">
+  <div class="flex flex-wrap lg:flex-nowrap items-center gap-8 mb-4">
     <div class="flex items-center gap-4">
       <label for="time-span" class="font-semibold block text-xl"> Time Span </label>
       <Dropdown id="time-span" :options="timeSpans" optionLabel="name" placeholder="Select a Time Span"

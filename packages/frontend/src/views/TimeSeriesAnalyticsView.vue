@@ -4,7 +4,7 @@
     <Skeleton borderRadius="16px" width="40rem" height="24rem" class="mb-2"></Skeleton>
   </template>
   <template v-else>
-    <div class="w-full flex flex-wrap flex-col lg:flex-row gap-16 lg:gap-4">
+    <div class="w-full flex flex-wrap flex-col lg:flex-row lg:flex-nowrap gap-16 lg:gap-4">
       <div class="lg:w-2/3 h-[450px]">
         <TotalHandleChart :chartData="chartData" :selectedTimeSpan="settingsStore.selectedTimeSpan"
           :currencySign="settingsStore.selectedCurrencySign"
