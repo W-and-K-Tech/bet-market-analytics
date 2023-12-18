@@ -13,13 +13,6 @@ const items = ref([
       router.push('/');
     }
   },
-  {
-    label: 'About',
-    icon: 'pi pi-fw pi-flag',
-    command: () => {
-      router.push('/about');
-    }
-  },
 ]);
 
 </script>

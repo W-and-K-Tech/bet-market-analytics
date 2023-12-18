@@ -4,6 +4,7 @@ import TabPanel from 'primevue/tabpanel';
 import DimensionalAnalyticsView from "./DimensionalAnalyticsView.vue";
 import GlobalSettings from "@/components/GlobalSettings.vue";
 import TimeSeriesAnalyticsView from "./TimeSeriesAnalyticsView.vue";
+import GameInfo from '@/components/GameInfo.vue';
 import { useSettingsStore } from '@/stores/settings';
 import dayjs from 'dayjs';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
@@ -18,8 +19,9 @@ const settingStore = useSettingsStore();
       <GlobalSettings />
     </div>
 
-    <div class="grow p-8">
-      <h3 class="text-sm text-slate-500 font-semibold">Report Range</h3>
+    <div class="grow p-8 shrink-0" style="width: calc(100vw - 18rem);">
+      <GameInfo />
+      <h3 class=" text-sm text-slate-500 font-semibold">Report Range</h3>
       <div class="text-xl text-slate-800 mb-4">{{ dayjs(settingStore.startDateTime).format('lll') }} - {{
         dayjs(settingStore.endDateTime).format('lll') }}</div>
       <TabView>
