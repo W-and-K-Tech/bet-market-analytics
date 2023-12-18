@@ -6,15 +6,7 @@ import Toast from 'primevue/toast';
 
 const router = useRouter();
 
-const items = ref([
-  {
-    label: 'Home',
-    icon: 'pi pi-fw pi-home',
-    command: () => {
-      router.push('/');
-    }
-  },
-]);
+const items = ref([]);
 
 </script>
 
@@ -32,3 +24,12 @@ const items = ref([
 
   <RouterView />
 </template>
+
+<style scoped>
+.p-menubar {
+  color: white;
+  background: #3B82F6;
+  border: none;
+  border-radius: 0;
+}
+</style>
