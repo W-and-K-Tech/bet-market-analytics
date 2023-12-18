@@ -1,5 +1,7 @@
 Bet Market Analytics Dashboard
 
+demo: https://nba-bet-analytics-fe-ploz9.ondigitalocean.app/
+
 ## Objective
 
 Develop a JavaScript-based data visualization dashboard that provides insightful analytics on sports betting transactions. The dashboard should offer time-series analysis and dimensional analysis capabilities. You will use JavaScript for front-end development and SQL for data querying.
