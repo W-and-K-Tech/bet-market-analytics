@@ -70,8 +70,11 @@ Develop a JavaScript-based data visualization dashboard that provides insightful
     Also the query data is cached for better performance. There are more optimization that can be done with saving query result with additional table in MySQL.
 
   5. Creating Frontend UI (Using Vue 3, Vite, Pinia, ChartJS, and PrimeVue).
+
      1. responsive design
      2. Updating UI accordingly with user interaction
+
+  6. Deploying to Cloud Server (using private DigitalOcean as service provider)
 
 ## Development Time
 
