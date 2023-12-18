@@ -3,7 +3,7 @@ const router = express.Router();
 const mysql = require("mysql2/promise");
 const path = require("path");
 const NodeCache = require("node-cache");
-require("dotenv").config({ path: path.resolve(__dirname, "../../../.env") });
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const analyticsCache = new NodeCache();
 

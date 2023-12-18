@@ -70,7 +70,7 @@ const loadData = async ({
 }: RequestType) => {
   isLoading.value = true;
   try {
-    const url = new URL("http://localhost:3000/api/analytics/total-handle");
+    const url = new URL(`${import.meta.env.VITE_BACKEND_BASEURL}/api/analytics/total-handle`);
     url.searchParams.append('groupBy', groupBy);
     if (betType) url.searchParams.append('betType', betType);
     if (startDateTime) url.searchParams.append('startDateTime', dayjs(startDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));

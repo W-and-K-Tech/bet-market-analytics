@@ -103,7 +103,7 @@ watch(() => [
 async function fetchData({ groupType, startDateTime, endDateTime }: { groupType: GroupType, startDateTime?: Date, endDateTime?: Date }) {
   isLoading.value = true;
   try {
-    const url = new URL(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
+    const url = new URL(`${import.meta.env.VITE_BACKEND_BASEURL}/api/analytics/handle_by_${groupType}`);
     if (startDateTime) url.searchParams.append('startDateTime', dayjs(startDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
     if (endDateTime) url.searchParams.append('endDateTime', dayjs(endDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
 
