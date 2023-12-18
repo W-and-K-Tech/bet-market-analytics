@@ -46,17 +46,20 @@ watch(() => settingsStore.maxDateTime, (value) => {
   <div v-if="settingsStore.minDateTime && settingsStore.maxDateTime">
     <div class="flex flex-col flex-wrap gap-8">
       <div>
-        <label for="start-date-time" class="font-bold block mb-2"> Start Date Time </label>
+        <label for="start-date-time" class="font-semibold text-slate-500 block mb-2"><i class="pi pi-calendar-times"></i>
+          Start Date Time </label>
         <Calendar id="start-date-time" :minDate="settingsStore.minDateTime" :maxDate="settingsStore.maxDateTime"
           v-model="startDateTime" showTime hourFormat="12" />
       </div>
       <div>
-        <label for="end-date-time" class="font-bold block mb-2"> End Date Time </label>
+        <label for="end-date-time" class="font-semibold text-slate-500 block mb-2"><i class="pi pi-calendar-times"></i>
+          End Date Time </label>
         <Calendar id="end-date-time" :minDate="startDateTime" :maxDate="settingsStore.maxDateTime" v-model="endDateTime"
           showTime hourFormat="12" />
       </div>
       <div>
-        <label for="currencies" class="font-bold block mb-2"> Currency </label>
+        <label for="currencies" class="font-semibold text-slate-500 block mb-2"><i class="pi pi-money-bill"></i> Currency
+        </label>
         <Dropdown id="currencies" v-model="selectedCurrency" :options="curriencies" optionLabel="name"
           placeholder="Select Currency" />
       </div>

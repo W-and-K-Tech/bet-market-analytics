@@ -21,7 +21,7 @@ const settingStore = useSettingsStore();
 
     <div class="grow p-8 shrink-0" style="width: calc(100vw - 18rem);">
       <GameInfo />
-      <h3 class=" text-sm text-slate-500 font-semibold">Report Range</h3>
+      <h3 class="mt-4 mb-2 text-sm text-slate-500 font-semibold">Report Range</h3>
       <div class="text-xl text-slate-800 mb-4">{{ dayjs(settingStore.startDateTime).format('lll') }} - {{
         dayjs(settingStore.endDateTime).format('lll') }}</div>
       <TabView>
@@ -37,7 +37,7 @@ const settingStore = useSettingsStore();
         <TabPanel>
           <template #header>
             <div>
-              <i class="pi pi-chart-line"></i>
+              <i class="pi pi-chart-bar"></i>
               <span class="font-bold white-space-nowrap ml-2">Dimensional Analysis</span>
             </div>
           </template>
