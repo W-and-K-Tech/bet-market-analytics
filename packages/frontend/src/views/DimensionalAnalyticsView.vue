@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import Skeleton from 'primevue/skeleton';
 import HandleGroupByBarChart from "@/components/HandleGroupByBarChart.vue";
 import HandleGroupByPieChart from "@/components/HandleGroupByPieChart.vue";
 import { groupTitleMap, type GroupType } from '@/utils/types';
 import { generateColors } from '@/utils/index';
 import type { ChartData } from "chart.js";
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, reactive, watch, ref } from "vue";
 import Button from 'primevue/button';
 import { useSettingsStore } from "@/stores/settings";
 import dayjs from "dayjs";
@@ -20,6 +21,8 @@ const totalHandleDataByGroup = reactive<{ [key in GroupType]: any[] | null }>({
   'player_name': null,
   'team_abbr': null,
 });
+
+const isLoading = ref(false);
 
 const settingsStore = useSettingsStore();
 
@@ -120,15 +123,21 @@ async function fetchData({ groupType, startDateTime, endDateTime }: { groupType:
           :onclick="async () => handleClickMarketType(group)" :label="groupTitleMap[group]" />
       </div>
     </div>
-    <h3>{{ `TOP 10 ${settingsStore.currentGroupTitle} Betting Performance` }}</h3>
   </div>
 
-  <div class="flex flex-col lg:flex-row gap-12 lg:gap-4">
-    <div class="h-[450px] lg:w-3/4">
-      <HandleGroupByBarChart :chartData="barChartData" />
+  <template v-if="isLoading">
+    <Skeleton borderRadius="16px" width="30rem" height="4rem" class="mb-4"></Skeleton>
+    <Skeleton borderRadius="16px" width="40rem" height="24rem" class="mb-2"></Skeleton>
+  </template>
+  <template v-else>
+    <h3>{{ `TOP 10 ${settingsStore.currentGroupTitle} Betting Performance` }}</h3>
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-4">
+      <div class="h-[450px] lg:w-3/4">
+        <HandleGroupByBarChart :chartData="barChartData" />
+      </div>
+      <div class="h-[450px] lg:w-1/4">
+        <HandleGroupByPieChart :chartData="pieChartData" />
+      </div>
     </div>
-    <div class="h-[450px] lg:w-1/4">
-      <HandleGroupByPieChart :chartData="pieChartData" />
-    </div>
-  </div>
+  </template>
 </template>

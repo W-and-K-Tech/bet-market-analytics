@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <template v-if="isLoading">
+    <Skeleton borderRadius="16px" width="30rem" height="4rem" class="mb-4"></Skeleton>
+    <Skeleton borderRadius="16px" width="40rem" height="24rem" class="mb-2"></Skeleton>
+  </template>
+  <template v-else>
     <div class="w-full flex flex-col lg:flex-row gap-16 lg:gap-4">
       <div class="lg:w-2/3 h-[450px]">
         <TotalHandleChart :chartData="chartData" :selectedTimeSpan="settingsStore.selectedTimeSpan"
@@ -10,11 +14,12 @@
           :currencySign="settingsStore.selectedCurrencySign" />
       </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script setup lang="ts">
 import type { ChartData } from "chart.js";
+import Skeleton from 'primevue/skeleton';
 import TotalHandleChart from "../components/TotalHandleChart.vue";
 import TotalHandleTable from "../components/TotalHandleTable.vue";
 import { computed, onMounted, ref, watch } from "vue";
@@ -23,6 +28,8 @@ import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
+
+const isLoading = ref(false);
 
 const chartData = ref<ChartData | null>(null);
 const settingsStore = useSettingsStore();
