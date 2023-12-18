@@ -7,6 +7,7 @@
     <div class="w-full flex flex-col lg:flex-row gap-16 lg:gap-4">
       <div class="lg:w-2/3 h-[450px]">
         <TotalHandleChart :chartData="chartData" :selectedTimeSpan="settingsStore.selectedTimeSpan"
+          :currencySign="settingsStore.selectedCurrencySign"
           @onChangeTimeSpan="(value: TimeSpanOptions) => settingsStore.setSelectedTimeSpan(value)" />
       </div>
       <div class="lg:w-1/3">

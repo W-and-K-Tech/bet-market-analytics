@@ -138,10 +138,10 @@ async function fetchData({ groupType, startDateTime, endDateTime }: { groupType:
     <h3>{{ `TOP 10 ${settingsStore.currentGroupTitle} Betting Performance` }}</h3>
     <div class="flex flex-col lg:flex-row gap-12 lg:gap-4">
       <div class="h-[450px] lg:w-3/4">
-        <HandleGroupByBarChart :chartData="barChartData" />
+        <HandleGroupByBarChart :chartData="barChartData" :currencySign="settingsStore.selectedCurrencySign" />
       </div>
       <div class="h-[450px] lg:w-1/4">
-        <HandleGroupByPieChart :chartData="pieChartData" />
+        <HandleGroupByPieChart :chartData="pieChartData" :currencySign="settingsStore.selectedCurrencySign" />
       </div>
     </div>
   </template>

@@ -24,7 +24,7 @@ const items = ref([
     <div class="flex h-12">
       <Menubar :model="items" class="w-full justify-between">
         <template #start>
-          <h1 class="pl-4 font-bold"><i class="pi pi-globe mr-2"></i>NBA Game Bet Transaction Analytics Dashboard</h1>
+          <h1 class="pl-4 font-bold">🏀 NBA Game Bet Transaction Analytics Dashboard</h1>
         </template>
       </Menubar>
     </div>

@@ -56,7 +56,7 @@ const timeSpans = [
   { name: 'Hourly', value: TimeSpanOptions.Hourly },
 ];
 
-const { chartData, selectedTimeSpan } = defineProps<{ chartData: ChartData | null, selectedTimeSpan: TimeSpanOptions }>();
+const { chartData, selectedTimeSpan, currencySign } = defineProps<{ chartData: ChartData | null, selectedTimeSpan: TimeSpanOptions, currencySign: string }>();
 const emit = defineEmits(['onChangeTimeSpan']);
 
 const currentSelectedOptionsItem = ref(timeSpans.find((item) => item.value === selectedTimeSpan));
@@ -81,7 +81,7 @@ const options: ChartOptions<'line'> = {
     tooltip: {
       callbacks: {
         label: function ({ raw }) {
-          return numeral(raw).format('$0,0.00');
+          return `${currencySign}${numeral(raw).format('0,0')}`;
         },
       },
     },
@@ -122,7 +122,7 @@ const options: ChartOptions<'line'> = {
       ticks: {
         // Include a dollar sign in the ticks
         callback: function (value) {
-          return numeral(value).format('$0,0');
+          return `${currencySign}${numeral(value).format('0,0')}`;
         }
       }
     }

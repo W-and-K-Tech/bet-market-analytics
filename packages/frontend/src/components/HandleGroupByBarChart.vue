@@ -10,7 +10,7 @@ import numeral from 'numeral';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const { title, chartData } = defineProps<{ title?: string; chartData: ChartData | null }>();
+const { title, chartData, currencySign } = defineProps<{ title?: string; chartData: ChartData | null; currencySign: string; }>();
 
 const chartOptions = {
   responsive: true,
@@ -20,7 +20,7 @@ const chartOptions = {
     tooltip: {
       callbacks: {
         label: function ({ raw }) {
-          return numeral(raw).format('$0,0.00');
+          return `${currencySign}${numeral(raw).format('0,0')}`;
         },
       },
     },
@@ -28,9 +28,9 @@ const chartOptions = {
   scales: {
     x: {
       ticks: {
-        // Include a dollar sign in the ticks
+        // Include a currency sign in the ticks
         callback: function (value) {
-          return numeral(value).format('$0,0');
+          return `${currencySign}${numeral(value).format('0,0')}`;
         }
       }
     }

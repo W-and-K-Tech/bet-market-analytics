@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center font-semibold text-slate-500">NBA | Nov 4</div>
+  <div class="text-center font-semibold text-slate-500">🏀 NBA | Nov 4</div>
   <div class="flex gap-12 items-center justify-center">
     <div class="flex flex-col items-center w-60 gap-2">
       <img id="uta-logo" width="40"
