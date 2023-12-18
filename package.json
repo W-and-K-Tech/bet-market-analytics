@@ -7,6 +7,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "preview:frontend": "cd packages/frontend && yarn preview",
     "dev:frontend": "cd packages/frontend && yarn dev",
