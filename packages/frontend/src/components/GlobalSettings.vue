@@ -63,7 +63,7 @@ watch(() => settingsStore.maxDateTime, (value) => {
         <Dropdown id="currencies" v-model="selectedCurrency" :options="curriencies" optionLabel="name"
           placeholder="Select Currency" />
       </div>
-      <Button severity="info" label="Query" :onclick="handleTimeRangeChangeClick" />
+      <Button label="Query" :onclick="handleTimeRangeChangeClick" />
     </div>
   </div>
 </template>

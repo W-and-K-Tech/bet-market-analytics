@@ -116,7 +116,7 @@ async function fetchData({ groupType, startDateTime, endDateTime }: { groupType:
     <div class="flex items-center gap-12 mb-8">
       <h3 class="text-lg">Market</h3>
       <div class="flex gap-4">
-        <Button :key="group" v-for="group in groups" severity="info" :outlined="settingsStore.currentGroup !== group"
+        <Button :key="group" v-for="group in groups" :outlined="settingsStore.currentGroup !== group"
           :onclick="async () => handleClickMarketType(group)" :label="groupTitleMap[group]" />
       </div>
     </div>
