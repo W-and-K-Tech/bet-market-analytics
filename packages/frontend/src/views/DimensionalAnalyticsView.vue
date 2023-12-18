@@ -9,6 +9,9 @@ import { computed, onMounted, reactive, watch, ref } from "vue";
 import Button from 'primevue/button';
 import { useSettingsStore } from "@/stores/settings";
 import dayjs from "dayjs";
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
 
 const colorSet: { [key in GroupType]: any[] } = {
   'stat_type': generateColors(50),
@@ -98,17 +101,19 @@ watch(() => [
 });
 
 async function fetchData({ groupType, startDateTime, endDateTime }: { groupType: GroupType, startDateTime?: Date, endDateTime?: Date }) {
+  isLoading.value = true;
   try {
-
     const url = new URL(`http://localhost:3000/api/analytics/handle_by_${groupType}`);
     if (startDateTime) url.searchParams.append('startDateTime', dayjs(startDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
     if (endDateTime) url.searchParams.append('endDateTime', dayjs(endDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
 
     const response = await fetch(url.href);
     const data = await response.json();
+    isLoading.value = false;
     return data.filter((item: any) => item.currency === settingsStore.selectedCurrency);
   } catch (error) {
     console.error('Error fetching data:', error);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Cannot get data. Please refresh the page and try again.', life: 3000 });
     return null;
   }
 }

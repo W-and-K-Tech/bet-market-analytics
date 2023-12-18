@@ -1,6 +1,6 @@
 <template>
   <template v-if="isLoading">
-    <Skeleton borderRadius="16px" width="30rem" height="4rem" class="mb-4"></Skeleton>
+    <Skeleton borderRadius="16px" width="30rem" height="3rem" class="mb-4"></Skeleton>
     <Skeleton borderRadius="16px" width="40rem" height="24rem" class="mb-2"></Skeleton>
   </template>
   <template v-else>
@@ -27,7 +27,10 @@ import { useSettingsStore } from "@/stores/settings";
 import { CurrencyType, TimeSpanOptions } from "@/utils/types";
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
+import { useToast } from "primevue/usetoast";
 dayjs.extend(utc);
+
+const toast = useToast();
 
 const isLoading = ref(false);
 
@@ -64,6 +67,7 @@ const loadData = async ({
   endDateTime,
   currency,
 }: RequestType) => {
+  isLoading.value = true;
   try {
     const url = new URL("http://localhost:3000/api/analytics/total-handle");
     url.searchParams.append('groupBy', groupBy);
@@ -72,9 +76,11 @@ const loadData = async ({
     if (endDateTime) url.searchParams.append('endDateTime', dayjs(endDateTime).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'));
     const response = await fetch(url.href);
     const data = await response.json() as Array<any>;
+    isLoading.value = false;
     return data.filter((item) => item.currency === currency);
   } catch (error) {
     console.error('Error fetching data:', error);
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Cannot get data. Please refresh the page and try again.', });
     return null;
   }
 }

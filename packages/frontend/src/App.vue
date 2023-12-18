@@ -2,6 +2,7 @@
 import { RouterView, useRouter } from "vue-router";
 import Menubar from 'primevue/menubar';
 import { ref } from "vue";
+import Toast from 'primevue/toast';
 
 const router = useRouter();
 
@@ -19,7 +20,7 @@ const items = ref([
 
 <template>
   <header>
-
+    <Toast />
     <div class="flex h-12">
       <Menubar :model="items" class="w-full justify-between">
         <template #start>
