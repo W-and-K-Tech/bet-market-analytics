@@ -131,8 +131,8 @@ async function fetchData({ groupType, startDateTime, endDateTime }: { groupType:
   </div>
 
   <template v-if="isLoading">
-    <Skeleton borderRadius="16px" width="30rem" height="4rem" class="mb-4"></Skeleton>
-    <Skeleton borderRadius="16px" width="40rem" height="24rem" class="mb-2"></Skeleton>
+    <Skeleton borderRadius="16px" width="70%" height="4rem" class="mb-4"></Skeleton>
+    <Skeleton borderRadius="16px" width="100%" height="24rem" class="mb-2"></Skeleton>
   </template>
   <template v-else>
     <h3>{{ `TOP 10 ${settingsStore.currentGroupTitle} Betting Performance` }}</h3>

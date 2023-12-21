@@ -1,7 +1,7 @@
 <template>
   <template v-if="isLoading">
-    <Skeleton borderRadius="16px" width="30rem" height="3rem" class="mb-4"></Skeleton>
-    <Skeleton borderRadius="16px" width="40rem" height="24rem" class="mb-2"></Skeleton>
+    <Skeleton borderRadius="16px" width="70%" height="3rem" class="mb-4"></Skeleton>
+    <Skeleton borderRadius="16px" width="100%" height="24rem" class="mb-2"></Skeleton>
   </template>
   <template v-else>
     <div class="w-full flex flex-wrap flex-col lg:flex-row lg:flex-nowrap gap-16 lg:gap-4">
